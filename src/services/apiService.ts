@@ -1,6 +1,6 @@
 import { User, AuthResponse } from '@/types/user';
 
-const API_BASE = 'http://localhost:8080/v1';
+const API_BASE = `${process.env.NEXT_PUBLIC_API_URL}/v1`;
 
 async function fetchWithAuth(url: string, options: RequestInit = {}) {
   const headers = {

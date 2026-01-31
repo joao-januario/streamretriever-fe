@@ -1,4 +1,4 @@
-const API_BASE = 'http://localhost:8080';
+const API_BASE = process.env.NEXT_PUBLIC_API_URL;
 
 export const authService = {
   // With HttpOnly cookies, we cannot read the token from JavaScript
