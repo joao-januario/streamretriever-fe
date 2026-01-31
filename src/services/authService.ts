@@ -35,7 +35,7 @@ export const authService = {
   async logout(): Promise<void> {
     try {
       console.log('authService.logout: Calling backend logout endpoint');
-      await fetch(`${API_BASE}/api/auth/logout`, {
+      await fetch(`${API_BASE}/v1/auth/logout`, {
         method: 'POST',
         credentials: 'include', // Send cookies
       });

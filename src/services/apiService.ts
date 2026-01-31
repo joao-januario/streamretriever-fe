@@ -1,6 +1,6 @@
 import { User, AuthResponse } from '@/types/user';
 
-const API_BASE = 'http://localhost:8080/api';
+const API_BASE = 'http://localhost:8080/v1';
 
 async function fetchWithAuth(url: string, options: RequestInit = {}) {
   const headers = {

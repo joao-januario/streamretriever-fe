@@ -11,7 +11,7 @@ export default function LoginButton() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen gap-5">
-      <h1 className="text-4xl font-bold">🎮 TwitchMixer</h1>
+      <h1 className="text-4xl font-bold">🎮 Stream Retriever</h1>
       <p className="text-lg">Login with your Twitch account to continue</p>
       <button
         onClick={handleLogin}

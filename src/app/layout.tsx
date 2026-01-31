@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "TwitchMixer",
+  title: "Stream Retriever",
   description: "Twitch OAuth Integration",
 };
 
