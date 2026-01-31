@@ -2,7 +2,7 @@ import { User, AuthResponse } from '@/types/user';
 
 const API_BASE = `${process.env.NEXT_PUBLIC_API_URL}/v1`;
 
-async function fetchWithAuth(url: string, options: RequestInit = {}) {
+async function fetchWithAuth<T>(url: string, options: RequestInit = {}): Promise<T> {
   const headers = {
     'Content-Type': 'application/json',
     ...options.headers,
@@ -28,15 +28,15 @@ async function fetchWithAuth(url: string, options: RequestInit = {}) {
     throw new Error(`HTTP error! status: ${response.status}`);
   }
 
-  return response.json();
+  return response.json() as T;
 }
 
 export const apiService = {
   async getCurrentUser(): Promise<User> {
-    return fetchWithAuth(`${API_BASE}/users/me`);
+    return fetchWithAuth<User>(`${API_BASE}/users/me`);
   },
 
   async refreshToken(): Promise<AuthResponse> {
-    return fetchWithAuth(`${API_BASE}/auth/token`);
+    return fetchWithAuth<AuthResponse>(`${API_BASE}/auth/token`);
   }
 };
