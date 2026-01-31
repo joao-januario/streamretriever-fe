@@ -5,6 +5,8 @@ import Image from 'next/image';
 import { apiService } from '@/services/apiService';
 import { authService } from '@/services/authService';
 import { User } from '@/types/user';
+import { Button } from '@/components/ui/Button';
+import { Spinner } from '@/components/ui/Spinner';
 
 export default function DashboardContent() {
   const [user, setUser] = useState<User | null>(null);
@@ -22,7 +24,6 @@ export default function DashboardContent() {
     try {
       setLoading(true);
       setError(null);
-      console.log('DashboardContent - Fetching user data from API');
       const userData = await apiService.getCurrentUser();
       console.log('DashboardContent - User data received:', userData);
       setUser(userData);
@@ -39,19 +40,20 @@ export default function DashboardContent() {
   };
 
   if (loading) {
-    return <div className="p-5">Loading...</div>;
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Spinner size="lg" />
+      </div>
+    );
   }
 
   if (error) {
     return (
       <div className="p-5 text-red-600">
         Error: {error}
-        <button
-          onClick={loadUserData}
-          className="ml-2 px-3 py-1 bg-blue-500 text-white rounded"
-        >
+        <Button onClick={loadUserData} variant="secondary" size="sm" className="ml-2">
           Retry
-        </button>
+        </Button>
       </div>
     );
   }
@@ -83,18 +85,12 @@ export default function DashboardContent() {
           </div>
 
           <div className="mt-8 flex gap-3">
-            <button
-              onClick={loadUserData}
-              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-            >
-              🔄 Refresh Data
-            </button>
-            <button
-              onClick={handleLogout}
-              className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
-            >
-              🚪 Logout
-            </button>
+            <Button onClick={loadUserData} variant="secondary">
+              Refresh Data
+            </Button>
+            <Button onClick={handleLogout} variant="danger">
+              Logout
+            </Button>
           </div>
         </div>
       )}

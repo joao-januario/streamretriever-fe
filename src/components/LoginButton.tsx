@@ -1,24 +1,16 @@
 'use client';
 
 import { authService } from '@/services/authService';
+import { Button } from '@/components/ui/Button';
 
 export default function LoginButton() {
-
-  const handleLogin = () => {
-    console.log('LoginButton - Starting OAuth login');
-    authService.login();
-  };
-
   return (
     <div className="flex flex-col items-center justify-center min-h-screen gap-5">
-      <h1 className="text-4xl font-bold">🎮 Stream Retriever</h1>
+      <h1 className="text-4xl font-bold">Stream Retriever</h1>
       <p className="text-lg">Login with your Twitch account to continue</p>
-      <button
-        onClick={handleLogin}
-        className="px-6 py-3 text-white bg-purple-600 rounded hover:bg-purple-700 transition"
-      >
+      <Button onClick={() => authService.login()} variant="primary" size="lg">
         Login with Twitch
-      </button>
+      </Button>
     </div>
   );
 }

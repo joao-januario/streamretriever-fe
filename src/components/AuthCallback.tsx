@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { Spinner } from '@/components/ui/Spinner';
 
 export default function AuthCallback() {
   const router = useRouter();
@@ -27,7 +28,7 @@ export default function AuthCallback() {
 
   return (
     <div className="flex items-center justify-center min-h-screen">
-      <p>Authenticating...</p>
+      <Spinner size="lg" />
     </div>
   );
 }
