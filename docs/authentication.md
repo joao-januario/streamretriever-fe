@@ -56,13 +56,13 @@ OAuth callback handler. Cookie already set by backend, just redirects to dashboa
 **`app/dashboard/page.tsx`**
 Protected route example using `apiService`.
 
-### Components
+### Hooks
 
-**`LoginButton.tsx`**
-Initiates OAuth flow via `authService.login()`.
-
-**`DashboardContent.tsx`**
-Fetches user data from `/api/users/me` using `apiService`.
+**`hooks/useUser.ts`**
+SWR-powered hook for fetching and caching current user data.
+```typescript
+const { user, isLoading, error, refetch } = useUser();
+```
 
 ## Configuration
 
@@ -77,4 +77,4 @@ Fetches user data from `/api/users/me` using `apiService`.
 - **401 Errors**: Check `withCredentials: true` in apiService
 
 ---
-*Last updated: January 31, 2026*
+*Last updated: February 1, 2026*

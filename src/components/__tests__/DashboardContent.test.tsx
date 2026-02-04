@@ -1,0 +1,103 @@
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { SWRConfig } from 'swr';
+import DashboardContent from '../DashboardContent';
+import { server } from '@/test/mocks/server';
+import { errorHandlers, mockUser } from '@/test/mocks/handlers';
+
+// Mock authService
+vi.mock('@/services/authService', () => ({
+  authService: {
+    logout: vi.fn(),
+  },
+}));
+
+// Mock next/image
+vi.mock('next/image', () => ({
+  default: ({ src, alt, ...props }: { src: string; alt: string }) => {
+    // eslint-disable-next-line @next/next/no-img-element
+    return <img src={src} alt={alt} {...props} />;
+  },
+}));
+
+function renderWithSWRConfig(ui: React.ReactElement) {
+  return render(
+    <SWRConfig value={{ dedupingInterval: 0, provider: () => new Map() }}>
+      {ui}
+    </SWRConfig>
+  );
+}
+
+describe('DashboardContent', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('should show spinner while loading', () => {
+    renderWithSWRConfig(<DashboardContent />);
+
+    expect(screen.getByRole('status')).toBeInTheDocument();
+  });
+
+  it('should display user data on success', async () => {
+    renderWithSWRConfig(<DashboardContent />);
+
+    await waitFor(() => {
+      expect(screen.queryByRole('status')).not.toBeInTheDocument();
+    });
+
+    expect(screen.getByText(`Welcome, ${mockUser.username}!`)).toBeInTheDocument();
+    expect(screen.getByText(mockUser.email)).toBeInTheDocument();
+    expect(screen.getByText(mockUser.accountId.toString())).toBeInTheDocument();
+  });
+
+  it('should display profile image when available', async () => {
+    renderWithSWRConfig(<DashboardContent />);
+
+    await waitFor(() => {
+      expect(screen.queryByRole('status')).not.toBeInTheDocument();
+    });
+
+    const image = screen.getByAltText('Profile');
+    expect(image).toHaveAttribute('src', mockUser.profileImageUrl);
+  });
+
+  it('should display error state with retry button', async () => {
+    server.use(errorHandlers.serverError);
+
+    renderWithSWRConfig(<DashboardContent />);
+
+    await waitFor(() => {
+      expect(screen.queryByRole('status')).not.toBeInTheDocument();
+    });
+
+    expect(screen.getByText(/Error:/)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Retry' })).toBeInTheDocument();
+  });
+
+  it('should call logout when logout button is clicked', async () => {
+    const user = userEvent.setup();
+    const { authService } = await import('@/services/authService');
+
+    renderWithSWRConfig(<DashboardContent />);
+
+    await waitFor(() => {
+      expect(screen.queryByRole('status')).not.toBeInTheDocument();
+    });
+
+    await user.click(screen.getByRole('button', { name: 'Logout' }));
+
+    expect(authService.logout).toHaveBeenCalled();
+  });
+
+  it('should show refresh data button', async () => {
+    renderWithSWRConfig(<DashboardContent />);
+
+    await waitFor(() => {
+      expect(screen.queryByRole('status')).not.toBeInTheDocument();
+    });
+
+    expect(screen.getByRole('button', { name: 'Refresh Data' })).toBeInTheDocument();
+  });
+});

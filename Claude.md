@@ -1,7 +1,7 @@
 # Claude Context: Stream Retriever Frontend
 
 ## Tech Stack
-Next.js 14 (App Router) · TypeScript · Tailwind CSS · Axios
+Next.js 14 (App Router) · TypeScript · Tailwind CSS · Axios · SWR
 
 ## Overview
 Frontend for **Stream Retriever** (Twitch OAuth integration). Backend: Spring Boot @ `http://localhost:8080`.
@@ -20,6 +20,8 @@ Type summaries in chat unless explicitly asked to create a file.
 src/
 ├── app/              # Next.js App Router pages
 ├── components/       # React components
+│   └── ui/           # Reusable UI components (Button, Spinner)
+├── hooks/            # Custom React hooks (useUser)
 ├── services/         # API client (apiService.ts) & auth helpers
 └── types/            # TypeScript definitions
 ```
