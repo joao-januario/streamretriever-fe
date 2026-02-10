@@ -1,7 +1,6 @@
 'use client';
 
 import Image from 'next/image';
-import { authService } from '@/services/authService';
 import { Button } from '@/components/ui/Button';
 import { Spinner } from '@/components/ui/Spinner';
 import { useUser } from '@/hooks/useUser';
@@ -54,12 +53,9 @@ export default function DashboardContent() {
             <p><strong>Username:</strong> {user.username}</p>
           </div>
 
-          <div className="mt-8 flex gap-3">
+          <div className="mt-8">
             <Button onClick={() => refetch()} variant="secondary">
               Refresh Data
-            </Button>
-            <Button onClick={() => authService.logout()} variant="danger">
-              Logout
             </Button>
           </div>
         </div>

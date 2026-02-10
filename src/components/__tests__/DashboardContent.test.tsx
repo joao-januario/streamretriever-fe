@@ -1,17 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import { SWRConfig } from 'swr';
 import DashboardContent from '../DashboardContent';
 import { server } from '@/test/mocks/server';
 import { errorHandlers, mockUser } from '@/test/mocks/handlers';
-
-// Mock authService
-vi.mock('@/services/authService', () => ({
-  authService: {
-    logout: vi.fn(),
-  },
-}));
 
 // Mock next/image
 vi.mock('next/image', () => ({
@@ -74,21 +66,6 @@ describe('DashboardContent', () => {
 
     expect(screen.getByText(/Error:/)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Retry' })).toBeInTheDocument();
-  });
-
-  it('should call logout when logout button is clicked', async () => {
-    const user = userEvent.setup();
-    const { authService } = await import('@/services/authService');
-
-    renderWithSWRConfig(<DashboardContent />);
-
-    await waitFor(() => {
-      expect(screen.queryByRole('status')).not.toBeInTheDocument();
-    });
-
-    await user.click(screen.getByRole('button', { name: 'Logout' }));
-
-    expect(authService.logout).toHaveBeenCalled();
   });
 
   it('should show refresh data button', async () => {

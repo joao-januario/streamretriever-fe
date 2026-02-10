@@ -68,7 +68,7 @@ playwright.config.ts
 
 ## Test Coverage
 
-### Unit Tests (38 tests)
+### Unit Tests
 
 **Services:**
 - `apiService` - fetchWithAuth success, 401 redirect, error handling, network failures
@@ -98,7 +98,7 @@ playwright.config.ts
 
 ### Unit/Integration Test Example
 
-```typescript
+```tsx
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { MyComponent } from '../MyComponent';
@@ -167,3 +167,6 @@ Error variants available for testing failure scenarios:
 - `errorHandlers.unauthorized` - 401 response
 - `errorHandlers.serverError` - 500 response
 - `errorHandlers.networkError` - Network failure
+
+---
+*Last updated: February 10, 2026*

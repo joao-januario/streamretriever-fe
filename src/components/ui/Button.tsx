@@ -10,18 +10,37 @@ export function Button({
   children,
   ...props
 }: ButtonProps) {
-  const baseStyles = 'rounded font-medium transition';
+  const baseStyles = [
+    'rounded-lg font-medium',
+    'transition-all duration-[var(--duration-normal)] ease-[var(--ease-smooth)]',
+    'active:scale-[0.97]',
+    'outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]',
+    'disabled:opacity-50 disabled:pointer-events-none',
+  ].join(' ');
 
   const variants = {
-    primary: 'bg-purple-600 text-white hover:bg-purple-700',
-    secondary: 'bg-blue-500 text-white hover:bg-blue-600',
-    danger: 'bg-red-500 text-white hover:bg-red-600',
+    primary: [
+      'bg-[var(--btn-primary-bg)] text-white',
+      'hover:bg-[var(--btn-primary-hover)] hover:shadow-lg hover:shadow-[var(--btn-primary-bg)]/25',
+      'focus-visible:ring-[var(--btn-primary-bg)]',
+    ].join(' '),
+    secondary: [
+      'bg-[var(--btn-secondary-bg)] text-[var(--sidebar-text-primary)]',
+      'hover:bg-[var(--btn-secondary-hover)]',
+      'focus-visible:ring-[var(--btn-secondary-hover)]',
+      'border border-[var(--sidebar-border)]',
+    ].join(' '),
+    danger: [
+      'bg-[var(--btn-danger-bg)] text-white',
+      'hover:bg-[var(--btn-danger-hover)] hover:shadow-lg hover:shadow-[var(--btn-danger-bg)]/25',
+      'focus-visible:ring-[var(--btn-danger-bg)]',
+    ].join(' '),
   };
 
   const sizes = {
-    sm: 'px-3 py-1 text-sm',
-    md: 'px-4 py-2',
-    lg: 'px-6 py-3 text-lg',
+    sm: 'px-3 py-1.5 text-sm',
+    md: 'px-4 py-2 text-sm',
+    lg: 'px-6 py-3 text-base',
   };
 
   return (
