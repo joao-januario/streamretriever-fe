@@ -1,13 +1,9 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { server } from '@/test/mocks/server';
 import { errorHandlers, mockUser } from '@/test/mocks/handlers';
 import { apiService } from '../apiService';
 
 describe('apiService', () => {
-  beforeEach(() => {
-    window.location.href = '';
-  });
-
   describe('getCurrentUser', () => {
     it('should return user data on success', async () => {
       const user = await apiService.getCurrentUser();
@@ -15,11 +11,10 @@ describe('apiService', () => {
       expect(user).toEqual(mockUser);
     });
 
-    it('should redirect to home on 401 unauthorized', async () => {
+    it('should throw Unauthorized on 401', async () => {
       server.use(errorHandlers.unauthorized);
 
       await expect(apiService.getCurrentUser()).rejects.toThrow('Unauthorized');
-      expect(window.location.href).toBe('/');
     });
 
     it('should throw error on server error', async () => {
@@ -32,15 +27,6 @@ describe('apiService', () => {
       server.use(errorHandlers.networkError);
 
       await expect(apiService.getCurrentUser()).rejects.toThrow();
-    });
-  });
-
-  describe('refreshToken', () => {
-    it('should return auth response on success', async () => {
-      const response = await apiService.refreshToken();
-
-      expect(response).toHaveProperty('token');
-      expect(response).toHaveProperty('expiresAt');
     });
   });
 });

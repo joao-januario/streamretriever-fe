@@ -1,0 +1,15 @@
+/* Card variants */
+.default {
+  background: var(--card-bg);
+  border-color: var(--card-border);
+}
+
+.header {
+  background: var(--card-header-bg);
+  border-color: var(--card-inner-border);
+}
+
+.inner {
+  background: var(--card-inner-bg);
+  border-color: var(--card-inner-border);
+}

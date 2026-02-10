@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { Sidebar } from '@/components/ui/Sidebar';
 import { NavItem } from '@/components/ui/NavItem';
 import { NavGroup } from '@/components/ui/NavGroup';
+import navItemStyles from '@/components/ui/NavItem.module.css';
 import {
   HomeIcon,
   LayersIcon,
@@ -23,16 +24,16 @@ export default function DashboardSidebar() {
     <Sidebar
       header={
         <div className="flex flex-col items-center gap-2">
-          <Image
-            src="/logo.svg"
-            alt="Stream Retriever logo"
-            width={48}
-            height={48}
-          />
-          <span
-            className="font-bold text-sm tracking-tight"
-            style={{ color: 'var(--sidebar-text-primary)' }}
-          >
+          <div className="relative">
+            <Image
+              src="/logo.svg"
+              alt="Stream Retriever logo"
+              width={48}
+              height={48}
+            />
+            <span className={navItemStyles.betaBadge}>BETA</span>
+          </div>
+          <span className="font-bold text-sm tracking-tight text-[var(--sidebar-text-primary)]">
             Stream Retriever
           </span>
         </div>
@@ -79,13 +80,15 @@ export default function DashboardSidebar() {
           active={pathname === '/home/sources/alerts'}
         />
       </NavGroup>
-      <NavGroup
+      <NavItem
         icon={<BookOpenIcon />}
         label="Library"
+        href="/home/library"
       />
-      <NavGroup
+      <NavItem
         icon={<RectangleGroupIcon />}
         label="Panels"
+        href="/home/panels"
       />
     </Sidebar>
   );

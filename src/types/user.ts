@@ -4,8 +4,3 @@ export interface User {
   email: string;
   profileImageUrl: string;
 }
-
-export interface AuthResponse {
-  token: string;
-  expiresAt: number;
-}

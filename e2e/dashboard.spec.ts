@@ -1,17 +1,16 @@
 import { test, expect } from '@playwright/test';
 
-test.describe('Dashboard', () => {
-  test('should redirect to home when not authenticated', async ({ page }) => {
-    // Try to access dashboard without authentication
-    await page.goto('/dashboard');
+test.describe('Home Page', () => {
+  test('should redirect to login when not authenticated', async ({ page }) => {
+    // Try to access home without authentication
+    await page.goto('/home');
 
-    // Middleware should redirect to home
-    // or the page should show an error/redirect based on API response
+    // Middleware should redirect to login
     await expect(page).toHaveURL(/\/(|\?.*)?$/);
   });
 
   test('should show loading spinner initially', async ({ page }) => {
-    await page.goto('/dashboard');
+    await page.goto('/home');
 
     // Should see spinner briefly while checking auth
     const spinner = page.getByRole('status');
@@ -21,12 +20,12 @@ test.describe('Dashboard', () => {
 });
 
 test.describe('Protected Routes', () => {
-  test('unauthenticated user cannot access dashboard', async ({ page }) => {
-    const response = await page.goto('/dashboard');
+  test('unauthenticated user cannot access home', async ({ page }) => {
+    await page.goto('/home');
 
     // Either redirected or showing auth error
     const url = page.url();
-    const isRedirected = !url.includes('/dashboard');
+    const isRedirected = !url.includes('/home');
     const hasError = await page.getByText(/error|unauthorized|login/i).isVisible().catch(() => false);
 
     expect(isRedirected || hasError).toBe(true);

@@ -24,7 +24,7 @@ test.describe('Authentication Flow', () => {
     }
   });
 
-  test('auth callback should redirect to dashboard on success', async ({ page, context }) => {
+  test('auth callback should redirect to home on success', async ({ page, context }) => {
     // Set the JWT cookie to simulate authenticated state (middleware checks for this)
     await context.addCookies([
       {
@@ -56,8 +56,8 @@ test.describe('Authentication Flow', () => {
     // Simulate successful OAuth callback (no error param)
     await page.goto('/auth/callback');
 
-    // Should redirect to dashboard and stay there
-    await expect(page).toHaveURL('/dashboard');
+    // Should redirect to home
+    await expect(page).toHaveURL('/home');
   });
 
   test('auth callback should redirect to home on error', async ({ page }) => {
@@ -71,7 +71,7 @@ test.describe('Logout Flow', () => {
   test.skip('logout button should redirect to home', async ({ page }) => {
     // This test requires authentication setup
     // Skip for now as it needs proper auth state
-    await page.goto('/dashboard');
+    await page.goto('/home');
 
     const logoutButton = page.getByRole('button', { name: /logout/i });
     await logoutButton.click();

@@ -1,0 +1,48 @@
+/* Sidebar shell */
+.sidebar {
+  background: linear-gradient(180deg, var(--sidebar-bg-from) 0%, var(--sidebar-bg-via) 40%, var(--sidebar-bg-to) 100%);
+  border-right: 1px solid var(--sidebar-border);
+  animation: sidebar-fade-in var(--duration-slow) var(--ease-smooth) both;
+}
+
+@keyframes sidebar-fade-in {
+  from {
+    opacity: 0;
+    transform: translateX(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Noise texture overlay for atmosphere */
+.noise::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  pointer-events: none;
+  z-index: 1;
+  border-radius: inherit;
+}
+
+/* Subtle radial glow at top for depth */
+.glow {
+  background: radial-gradient(ellipse at center, var(--accent-glow) 0%, transparent 70%);
+  filter: blur(40px);
+  opacity: 0.5;
+}
+
+/* Header section */
+.header {
+  border-bottom: 1px solid var(--sidebar-border);
+}
+
+/* Footer section */
+.footer {
+  border-top: 1px solid var(--sidebar-border);
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.06) 0%, transparent 100%);
+}

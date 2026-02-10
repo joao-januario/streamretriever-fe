@@ -12,17 +12,10 @@ export default function AuthCallback() {
     const error = searchParams.get('error');
 
     if (error) {
-      console.error('AuthCallback - Authentication failed:', error);
       router.push('/?error=auth_failed');
       return;
     }
 
-    // Backend has already set HttpOnly cookie during OAuth callback!
-    // No need to extract or store token manually
-    console.log('AuthCallback - Login successful, cookie set by backend');
-    console.log('AuthCallback - Redirecting to dashboard');
-
-    // Redirect to dashboard
     router.push('/home');
   }, [searchParams, router]);
 

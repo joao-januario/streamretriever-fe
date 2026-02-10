@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import styles from './NavItem.module.css';
 
 interface NavItemProps {
   icon?: React.ReactNode;
@@ -33,27 +34,26 @@ export function NavItem({
   const stateStyles = (() => {
     if (isPremium) {
       return active
-        ? 'text-[var(--premium)]'
-        : 'text-[var(--premium)] opacity-80 hover:opacity-100 hover:bg-[var(--premium-soft)]';
+        ? `text-[var(--premium)] ${styles.premiumOverlay} ${styles.premiumOverlayActive}`
+        : `text-[var(--premium)] ${styles.premiumOverlay}`;
     }
     return active
       ? 'text-[var(--sidebar-text-primary)] bg-[var(--sidebar-surface-hover)]'
       : 'text-[var(--sidebar-text-secondary)] hover:text-[var(--sidebar-text-primary)] hover:bg-[var(--sidebar-surface-hover)]';
   })();
 
-  const styles = `${baseStyles} ${stateStyles} ${className}`;
+  const combinedStyles = `${baseStyles} ${stateStyles} ${className}`;
 
   const content = (
     <>
       {/* Active state indicator bar */}
-      {active && isDefault && <span className="nav-active-indicator" />}
-      {active && isPremium && <span className="nav-premium-indicator" />}
+      {active && isDefault && <span className={styles.activeIndicator} />}
+      {active && isPremium && <span className={styles.premiumIndicator} />}
 
       {/* Icon with hover lift */}
       {icon && (
         <span
           className="w-5 h-5 flex-shrink-0 transition-transform duration-[var(--duration-fast)] ease-[var(--ease-spring)] group-hover:scale-110"
-          style={active && isDefault ? { color: 'var(--accent)' } : undefined}
         >
           {icon}
         </span>
@@ -64,26 +64,21 @@ export function NavItem({
 
       {/* Hover glow effect (subtle background bloom) */}
       <span
-        className="absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-[var(--duration-normal)] pointer-events-none"
-        style={{
-          background: isPremium
-            ? 'radial-gradient(ellipse at 30% 50%, var(--premium-soft) 0%, transparent 70%)'
-            : 'radial-gradient(ellipse at 30% 50%, var(--accent-soft) 0%, transparent 70%)',
-        }}
+        className={`absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-[var(--duration-normal)] pointer-events-none ${isPremium ? styles.hoverGlowPremium : styles.hoverGlow}`}
       />
     </>
   );
 
   if (href) {
     return (
-      <Link href={href} className={styles} onClick={onClick}>
+      <Link href={href} className={combinedStyles} onClick={onClick}>
         {content}
       </Link>
     );
   }
 
   return (
-    <button type="button" className={styles} onClick={onClick}>
+    <button type="button" className={combinedStyles} onClick={onClick}>
       {content}
     </button>
   );

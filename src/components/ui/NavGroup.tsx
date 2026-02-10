@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { ChevronDownIcon } from '@/components/ui/Icons';
+import styles from './NavGroup.module.css';
 
 interface NavGroupProps {
   icon?: React.ReactNode;
@@ -35,7 +36,7 @@ export function NavGroup({ icon, label, children, defaultOpen = false }: NavGrou
 
       {/* Animated expand/collapse via CSS grid trick */}
       <div
-        className="nav-group-content"
+        className={styles.content}
         data-open={isOpen}
       >
         <div>

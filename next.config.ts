@@ -11,6 +11,16 @@ const nextConfig: NextConfig = {
         hostname: 'static-cdn.jtvnw.net',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: '*.jtvnw.net',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'd3aqoihi2n8ty8.cloudfront.net',
+        pathname: '/**',
+      },
     ],
   },
 };

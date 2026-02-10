@@ -1,17 +1,48 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { authService } from '../authService';
 
 describe('authService', () => {
+  const originalLocation = window.location;
+  let hrefSpy: ReturnType<typeof vi.fn>;
+
   beforeEach(() => {
-    window.location.href = '';
-    vi.clearAllMocks();
+    hrefSpy = vi.fn();
+    // Replace window.location with a mock that captures href assignments
+    Object.defineProperty(window, 'location', {
+      value: {
+        ...originalLocation,
+        href: '',
+        pathname: '/',
+        assign: vi.fn(),
+        replace: vi.fn(),
+        reload: vi.fn(),
+      },
+      writable: true,
+      configurable: true,
+    });
+    // Override href to be a spy-able setter
+    Object.defineProperty(window.location, 'href', {
+      set: hrefSpy,
+      get: () => '',
+      configurable: true,
+    });
+  });
+
+  afterEach(() => {
+    Object.defineProperty(window, 'location', {
+      value: originalLocation,
+      writable: true,
+      configurable: true,
+    });
   });
 
   describe('login', () => {
     it('should redirect to Twitch OAuth endpoint', () => {
       authService.login();
 
-      expect(window.location.href).toBe('http://localhost:8080/oauth2/authorization/twitch');
+      expect(hrefSpy).toHaveBeenCalledWith(
+        expect.stringContaining('/oauth2/authorization/twitch')
+      );
     });
   });
 
@@ -30,7 +61,7 @@ describe('authService', () => {
           credentials: 'include',
         }
       );
-      expect(window.location.href).toBe('/');
+      expect(hrefSpy).toHaveBeenCalledWith('/');
     });
 
     it('should redirect to home even on logout error', async () => {
@@ -38,7 +69,7 @@ describe('authService', () => {
 
       await authService.logout();
 
-      expect(window.location.href).toBe('/');
+      expect(hrefSpy).toHaveBeenCalledWith('/');
     });
   });
 });

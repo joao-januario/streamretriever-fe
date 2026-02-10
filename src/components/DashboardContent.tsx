@@ -20,24 +20,23 @@ export default function DashboardContent() {
 
   if (error) {
     return (
-      <div className="p-5 text-red-600">
-        Error: {error}
-        <Button onClick={() => refetch()} variant="secondary" size="sm" className="ml-2">
-          Retry
-        </Button>
+      <div className="p-6">
+        <Card>
+          <p className="text-red-400 mb-3">Error: {error}</p>
+          <Button onClick={() => refetch()} variant="secondary" size="sm">
+            Retry
+          </Button>
+        </Card>
       </div>
     );
   }
 
   return (
     <div className="p-6 h-full">
-      <div
-        className="h-full flex flex-col rounded-2xl border overflow-hidden"
-        style={{ background: 'var(--card-bg)', borderColor: 'var(--card-border)' }}
-      >
-        <div className="px-8 py-8" style={{ background: 'var(--card-header-bg)' }}>
+      <Card className="h-full flex flex-col !p-0 overflow-hidden">
+        <Card variant="header" className="!rounded-none !border-0 px-8 py-8">
           <h1 className="text-2xl font-bold">Settings</h1>
-        </div>
+        </Card>
 
         <div className="p-6 flex flex-col gap-6 flex-1">
           {user && (
@@ -56,7 +55,7 @@ export default function DashboardContent() {
                     )}
                     <div>
                       <h2 className="text-2xl font-semibold">{user.username}</h2>
-                      <p className="text-sm" style={{ color: 'var(--sidebar-text-secondary)' }}>
+                      <p className="text-sm text-[var(--text-muted)]">
                         {user.email}
                       </p>
                     </div>
@@ -65,18 +64,18 @@ export default function DashboardContent() {
 
                 <Card variant="inner">
                   <h3 className="text-lg font-semibold mb-4">Account Details</h3>
-                  <div className="space-y-3 text-sm" style={{ color: 'var(--sidebar-text-secondary)' }}>
+                  <div className="space-y-3 text-sm text-[var(--text-muted)]">
                     <div className="flex justify-between">
                       <span>Account ID</span>
-                      <span style={{ color: 'var(--foreground)' }}>{user.accountId}</span>
+                      <span className="text-[var(--foreground)]">{user.accountId}</span>
                     </div>
                     <div className="flex justify-between">
                       <span>Email</span>
-                      <span style={{ color: 'var(--foreground)' }}>{user.email}</span>
+                      <span className="text-[var(--foreground)]">{user.email}</span>
                     </div>
                     <div className="flex justify-between">
                       <span>Username</span>
-                      <span style={{ color: 'var(--foreground)' }}>{user.username}</span>
+                      <span className="text-[var(--foreground)]">{user.username}</span>
                     </div>
                   </div>
                 </Card>
@@ -93,7 +92,7 @@ export default function DashboardContent() {
             </>
           )}
         </div>
-      </div>
+      </Card>
     </div>
   );
 }

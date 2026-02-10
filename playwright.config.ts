@@ -1,7 +1,6 @@
 import { defineConfig, devices } from '@playwright/test';
 
 const isCI = !!process.env.CI;
-const isRealBackend = process.env.REAL_BACKEND === 'true';
 
 export default defineConfig({
   testDir: './e2e',
@@ -28,15 +27,9 @@ export default defineConfig({
       use: { ...devices['Desktop Safari'] },
     },
   ],
-  webServer: isRealBackend
-    ? {
-        command: 'npm run dev',
-        url: 'http://localhost:3000',
-        reuseExistingServer: !isCI,
-      }
-    : {
-        command: 'npm run dev',
-        url: 'http://localhost:3000',
-        reuseExistingServer: !isCI,
-      },
+  webServer: {
+    command: 'npm run dev',
+    url: 'http://localhost:3000',
+    reuseExistingServer: !isCI,
+  },
 });

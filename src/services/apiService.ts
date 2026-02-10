@@ -1,4 +1,4 @@
-import { User, AuthResponse } from '@/types/user';
+import { User } from '@/types/user';
 
 const API_BASE = `${process.env.NEXT_PUBLIC_API_URL}/v1`;
 
@@ -16,11 +16,6 @@ async function fetchWithAuth<T>(url: string, options: RequestInit = {}): Promise
   });
 
   if (response.status === 401) {
-    // Token is invalid or expired
-    console.error('Unauthorized - redirecting to login');
-    if (typeof window !== 'undefined') {
-      window.location.href = '/';
-    }
     throw new Error('Unauthorized');
   }
 
@@ -35,8 +30,4 @@ export const apiService = {
   async getCurrentUser(): Promise<User> {
     return fetchWithAuth<User>(`${API_BASE}/users/me`);
   },
-
-  async refreshToken(): Promise<AuthResponse> {
-    return fetchWithAuth<AuthResponse>(`${API_BASE}/auth/token`);
-  }
 };

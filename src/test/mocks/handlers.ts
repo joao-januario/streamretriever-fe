@@ -1,5 +1,5 @@
 import { http, HttpResponse } from 'msw';
-import { User, AuthResponse } from '@/types/user';
+import { User } from '@/types/user';
 
 const API_BASE = 'http://localhost:8080/v1';
 
@@ -10,20 +10,10 @@ export const mockUser: User = {
   profileImageUrl: 'https://example.com/avatar.png',
 };
 
-export const mockAuthResponse: AuthResponse = {
-  token: 'mock-jwt-token',
-  expiresAt: Date.now() + 3600000,
-};
-
 export const handlers = [
   // GET /v1/users/me
   http.get(`${API_BASE}/users/me`, () => {
     return HttpResponse.json(mockUser);
-  }),
-
-  // GET /v1/auth/token (refresh token)
-  http.get(`${API_BASE}/auth/token`, () => {
-    return HttpResponse.json(mockAuthResponse);
   }),
 
   // POST /v1/auth/logout

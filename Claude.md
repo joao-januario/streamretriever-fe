@@ -15,6 +15,8 @@ Type summaries in chat unless explicitly asked to create a file.
 **NOT localStorage!** Backend sets JWT in HttpOnly cookie (`jwt_token`). Frontend never touches tokens.
 - **All API calls MUST use `credentials: 'include'`** (native fetch, NOT Axios)
 - API base path: `/v1/` (e.g. `/v1/users/me`, `/v1/auth/logout`)
+- On 401, `fetchWithAuth` throws `Error('Unauthorized')` — redirect is handled by `useUser` hook via `router.push('/')`
+- SWR is configured with `shouldRetryOnError: false` to prevent retry loops on auth failures
 
 ### Middleware
 `src/middleware.ts` checks the `jwt_token` cookie for route protection:
@@ -27,13 +29,21 @@ Type summaries in chat unless explicitly asked to create a file.
 src/
 ├── app/                  # Next.js App Router pages
 │   ├── (app)/            # Route group — shared layout with sidebar
-│   │   ├── dashboard/    # Home page (welcome message)
-│   │   └── settings/     # User profile/settings (DashboardContent)
-│   └── auth/callback/    # OAuth callback handler
+│   │   ├── home/         # Home page + nested: premium, sources/chat, sources/alerts
+│   │   ├── settings/     # User profile/settings (DashboardContent)
+│   │   └── error.tsx     # Error boundary for app routes
+│   ├── auth/callback/    # OAuth callback handler
+│   ├── not-found.tsx     # Custom 404 page
+│   └── globals.css       # Theme tokens only (CSS custom properties)
 ├── components/           # React components
-│   ├── ui/               # Reusable UI (Button, Spinner, Sidebar, NavItem, NavGroup, Icons)
+│   ├── ui/               # Reusable UI — each component has a co-located .module.css
+│   │   ├── Sidebar.tsx / Sidebar.module.css
+│   │   ├── NavItem.tsx / NavItem.module.css
+│   │   ├── NavGroup.tsx / NavGroup.module.css
+│   │   ├── Card.tsx / Card.module.css
+│   │   ├── Button.tsx, Spinner.tsx, Icons.tsx
 │   ├── DashboardContent  # User profile view (rendered at /settings)
-│   └── DashboardSidebar  # Navigation sidebar
+│   └── DashboardSidebar  # Navigation sidebar (logo + nav wiring)
 ├── hooks/                # Custom React hooks (useUser)
 ├── middleware.ts          # Route protection via cookie check
 ├── services/             # API client (apiService.ts) & auth helpers (authService.ts)
@@ -47,13 +57,18 @@ src/
 
 ## Brand & Design — "Stream Retriever" Theme
 - **Personality**: warm, happy, inviting — Twitch-aligned but friendlier than typical dev dashboards
-- **Mascot**: golden retriever (referenced via golden amber premium color)
-- **Sidebar**: light bubbly blue-to-purple gradient (`#6372e8` → `#8b5cd0`), white text
-- **Main area**: dark purple, 4-layer card system (background → card → header/inner cards)
+- **Mascot/Logo**: golden retriever SVG (`public/logo.svg`) shown in sidebar header with "BETA" badge
+- **Sidebar**: purple gradient (`#8f17df` → `#4235cd` → `#4461ba`), white text, logo + "Stream Retriever" title at top
+- **Main area**: dark purple (`#1a1435`), 4-layer card system (background → card → header/inner cards)
 - **Accent**: Twitch purple (`#9146ff`)
-- **Premium**: golden amber (`#f59e0b`) — high contrast on light sidebar
+- **Premium**: golden amber (`#facc15`) — shimmer overlay + glow effects on nav item
 - **Card component** (`ui/Card.tsx`): variants `default` (outer), `header` (page title bar), `inner` (content sections)
-- All theme tokens live in `src/app/globals.css` as CSS custom properties
+
+### CSS Architecture
+- **`globals.css`**: theme tokens only (CSS custom properties in `:root`) — colors, timings, etc.
+- **`*.module.css`**: component-specific styles co-located next to their `.tsx` files (CSS Modules)
+- **Tailwind utilities**: used inline in JSX for layout (positioning, flex, spacing)
+- **Rule**: CSS lives in `.css` files, not in inline `style={{}}` props. TSX files handle structure and logic only.
 
 ---
 **Need more context?** Check `/docs/*.md` for technical details on specific areas.

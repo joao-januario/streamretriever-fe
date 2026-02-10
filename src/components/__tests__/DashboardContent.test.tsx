@@ -13,6 +13,18 @@ vi.mock('next/image', () => ({
   },
 }));
 
+// Mock next/navigation (useUser now uses useRouter)
+vi.mock('next/navigation', () => ({
+  useRouter: () => ({
+    push: vi.fn(),
+    replace: vi.fn(),
+    back: vi.fn(),
+    forward: vi.fn(),
+    refresh: vi.fn(),
+    prefetch: vi.fn(),
+  }),
+}));
+
 function renderWithSWRConfig(ui: React.ReactElement) {
   return render(
     <SWRConfig value={{ dedupingInterval: 0, provider: () => new Map() }}>
