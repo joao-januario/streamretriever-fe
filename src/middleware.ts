@@ -4,7 +4,8 @@ import type { NextRequest } from 'next/server';
 export function middleware(request: NextRequest) {
   const isLoginPage = request.nextUrl.pathname === '/';
   const isAuthCallback = request.nextUrl.pathname === '/auth/callback';
-  const isDashboard = request.nextUrl.pathname.startsWith('/dashboard');
+  const isHome = request.nextUrl.pathname.startsWith('/home');
+  const isSettings = request.nextUrl.pathname.startsWith('/settings');
   const hasTokenCookie = request.cookies.has('jwt_token');
 
   // Always allow auth callback to pass through
@@ -13,18 +14,18 @@ export function middleware(request: NextRequest) {
   }
 
   // If accessing dashboard without token cookie, redirect to login
-  if (isDashboard && !hasTokenCookie) {
+  if ((isHome || isSettings) && !hasTokenCookie) {
     return NextResponse.redirect(new URL('/', request.url));
   }
 
   // If accessing login page with token cookie, redirect to dashboard
   if (isLoginPage && hasTokenCookie) {
-    return NextResponse.redirect(new URL('/dashboard', request.url));
+    return NextResponse.redirect(new URL('/home', request.url));
   }
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ['/', '/auth/callback', '/dashboard/:path*'],
+  matcher: ['/', '/auth/callback', '/home/:path*', '/settings/:path*'],
 };

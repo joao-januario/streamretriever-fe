@@ -39,8 +39,8 @@ describe('DashboardContent', () => {
       expect(screen.queryByRole('status')).not.toBeInTheDocument();
     });
 
-    expect(screen.getByText(`Welcome, ${mockUser.username}!`)).toBeInTheDocument();
-    expect(screen.getByText(mockUser.email)).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: mockUser.username })).toBeInTheDocument();
+    expect(screen.getAllByText(mockUser.email).length).toBeGreaterThan(0);
     expect(screen.getByText(mockUser.accountId.toString())).toBeInTheDocument();
   });
 

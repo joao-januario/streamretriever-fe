@@ -18,19 +18,21 @@ Type summaries in chat unless explicitly asked to create a file.
 
 ### Middleware
 `src/middleware.ts` checks the `jwt_token` cookie for route protection:
-- `/dashboard/*` requires cookie → redirects to `/` if missing
-- `/` redirects to `/dashboard` if cookie present
+- `/home/*` and `/settings/*` require cookie → redirects to `/` if missing
+- `/` redirects to `/home` if cookie present
 - `/auth/callback` always passes through
 
 ## Project Structure
 ```
 src/
 ├── app/                  # Next.js App Router pages
-│   ├── auth/callback/    # OAuth callback handler
-│   └── dashboard/        # Protected dashboard (has its own layout with sidebar)
+│   ├── (app)/            # Route group — shared layout with sidebar
+│   │   ├── dashboard/    # Home page (welcome message)
+│   │   └── settings/     # User profile/settings (DashboardContent)
+│   └── auth/callback/    # OAuth callback handler
 ├── components/           # React components
 │   ├── ui/               # Reusable UI (Button, Spinner, Sidebar, NavItem, NavGroup, Icons)
-│   ├── DashboardContent  # Main dashboard view
+│   ├── DashboardContent  # User profile view (rendered at /settings)
 │   └── DashboardSidebar  # Navigation sidebar
 ├── hooks/                # Custom React hooks (useUser)
 ├── middleware.ts          # Route protection via cookie check
@@ -42,6 +44,16 @@ src/
 - **Unit/Integration**: Vitest + React Testing Library + MSW
 - **E2E**: Playwright (Chromium, Firefox, WebKit)
 - Commands: `/runlocaltests` (unit only), `/runalltests` (unit + E2E)
+
+## Brand & Design — "Stream Retriever" Theme
+- **Personality**: warm, happy, inviting — Twitch-aligned but friendlier than typical dev dashboards
+- **Mascot**: golden retriever (referenced via golden amber premium color)
+- **Sidebar**: light bubbly blue-to-purple gradient (`#6372e8` → `#8b5cd0`), white text
+- **Main area**: dark purple, 4-layer card system (background → card → header/inner cards)
+- **Accent**: Twitch purple (`#9146ff`)
+- **Premium**: golden amber (`#f59e0b`) — high contrast on light sidebar
+- **Card component** (`ui/Card.tsx`): variants `default` (outer), `header` (page title bar), `inner` (content sections)
+- All theme tokens live in `src/app/globals.css` as CSS custom properties
 
 ---
 **Need more context?** Check `/docs/*.md` for technical details on specific areas.

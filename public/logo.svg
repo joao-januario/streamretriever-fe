@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <!-- Head -->
+  <ellipse cx="32" cy="30" rx="18" ry="17" fill="#F5A623"/>
+  <!-- Ears -->
+  <ellipse cx="14" cy="24" rx="7" ry="11" fill="#D4891A" transform="rotate(-15 14 24)"/>
+  <ellipse cx="50" cy="24" rx="7" ry="11" fill="#D4891A" transform="rotate(15 50 24)"/>
+  <!-- Inner ears -->
+  <ellipse cx="14" cy="25" rx="4.5" ry="7" fill="#E8A030" transform="rotate(-15 14 25)"/>
+  <ellipse cx="50" cy="25" rx="4.5" ry="7" fill="#E8A030" transform="rotate(15 50 25)"/>
+  <!-- Muzzle -->
+  <ellipse cx="32" cy="36" rx="10" ry="8" fill="#FCEABB"/>
+  <!-- Nose -->
+  <ellipse cx="32" cy="33" rx="3.5" ry="2.5" fill="#3D2B1F"/>
+  <!-- Eyes -->
+  <circle cx="24" cy="26" r="3.5" fill="white"/>
+  <circle cx="40" cy="26" r="3.5" fill="white"/>
+  <!-- Pupils -->
+  <circle cx="24.5" cy="26.5" r="2" fill="#3D2B1F"/>
+  <circle cx="39.5" cy="26.5" r="2" fill="#3D2B1F"/>
+  <!-- Mouth -->
+  <path d="M28 37 Q32 41 36 37" stroke="#3D2B1F" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+  <!-- Tongue -->
+  <ellipse cx="32" cy="40" rx="2.5" ry="3.5" fill="#E87575"/>
+  <!-- Eyebrows -->
+  <path d="M21 22 Q24 20 27 22" stroke="#D4891A" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+  <path d="M37 22 Q40 20 43 22" stroke="#D4891A" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+  <!-- Forehead tuft -->
+  <path d="M29 15 Q32 11 35 15" stroke="#E8A030" stroke-width="2" fill="none" stroke-linecap="round"/>
+</svg>

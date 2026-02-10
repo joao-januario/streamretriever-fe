@@ -31,7 +31,7 @@ describe('AuthCallback', () => {
     render(<AuthCallback />);
 
     await waitFor(() => {
-      expect(mockPush).toHaveBeenCalledWith('/dashboard');
+      expect(mockPush).toHaveBeenCalledWith('/home');
     });
   });
 

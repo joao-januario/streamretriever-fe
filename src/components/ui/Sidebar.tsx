@@ -51,7 +51,7 @@ export function Sidebar({ header, children, footer, className = '' }: SidebarPro
           className="relative z-10 px-3 py-4 space-y-1"
           style={{
             borderTop: '1px solid var(--sidebar-border)',
-            background: 'linear-gradient(to top, rgba(0,0,0,0.2) 0%, transparent 100%)',
+            background: 'linear-gradient(to top, rgba(0, 0, 0, 0.06) 0%, transparent 100%)',
           }}
         >
           {footer}

@@ -23,7 +23,7 @@ export default function AuthCallback() {
     console.log('AuthCallback - Redirecting to dashboard');
 
     // Redirect to dashboard
-    router.push('/dashboard');
+    router.push('/home');
   }, [searchParams, router]);
 
   return (
