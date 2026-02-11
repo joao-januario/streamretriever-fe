@@ -1,0 +1,119 @@
+/* Loading state */
+.loadingWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+/* Error state */
+.errorWrapper {
+  padding: 1.5rem;
+}
+
+.errorText {
+  color: #f87171;
+  margin-bottom: 0.75rem;
+}
+
+/* Page layout */
+.page {
+  padding: 1.5rem;
+  height: 100%;
+}
+
+.outerCard {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  overflow: hidden;
+}
+
+.headerCard {
+  border-radius: 0;
+  border: 0;
+  padding: 2rem;
+}
+
+.pageTitle {
+  font-size: 1.5rem;
+  line-height: 2rem;
+  font-weight: 700;
+}
+
+.content {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  flex: 1;
+}
+
+/* Profile section */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.profileRow {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.profileImage {
+  border-radius: 9999px;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 20%, transparent);
+}
+
+.profileName {
+  font-size: 1.5rem;
+  line-height: 2rem;
+  font-weight: 600;
+}
+
+.profileEmail {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  color: var(--text-muted);
+}
+
+/* Account details */
+.detailsTitle {
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.detailsList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  color: var(--text-muted);
+}
+
+.detailsRow {
+  display: flex;
+  justify-content: space-between;
+}
+
+.detailsValue {
+  color: var(--foreground);
+}
+
+/* Actions */
+.actions {
+  display: flex;
+  gap: 0.75rem;
+}

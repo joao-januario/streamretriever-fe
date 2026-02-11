@@ -1,15 +1,25 @@
-/* Card variants */
+/* Base card */
+.card {
+  border-radius: 1rem;
+  border: 1px solid;
+  padding: 1.5rem;
+}
+
+/* Variants */
 .default {
+  composes: card;
   background: var(--card-bg);
   border-color: var(--card-border);
 }
 
 .header {
+  composes: card;
   background: var(--card-header-bg);
   border-color: var(--card-inner-border);
 }
 
 .inner {
+  composes: card;
   background: var(--card-inner-bg);
   border-color: var(--card-inner-border);
 }

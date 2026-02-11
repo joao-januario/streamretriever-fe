@@ -6,13 +6,14 @@ import { Card } from '@/components/ui/Card';
 import { Spinner } from '@/components/ui/Spinner';
 import { useUser } from '@/hooks/useUser';
 import { authService } from '@/services/authService';
+import styles from './DashboardContent.module.css';
 
 export default function DashboardContent() {
   const { user, isLoading, error, refetch } = useUser();
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className={styles.loadingWrapper}>
         <Spinner size="lg" />
       </div>
     );
@@ -20,9 +21,9 @@ export default function DashboardContent() {
 
   if (error) {
     return (
-      <div className="p-6">
+      <div className={styles.errorWrapper}>
         <Card>
-          <p className="text-red-400 mb-3">Error: {error}</p>
+          <p className={styles.errorText}>Error: {error}</p>
           <Button onClick={() => refetch()} variant="secondary" size="sm">
             Retry
           </Button>
@@ -32,30 +33,30 @@ export default function DashboardContent() {
   }
 
   return (
-    <div className="p-6 h-full">
-      <Card className="h-full flex flex-col !p-0 overflow-hidden">
-        <Card variant="header" className="!rounded-none !border-0 px-8 py-8">
-          <h1 className="text-2xl font-bold">Settings</h1>
+    <div className={styles.page}>
+      <Card className={styles.outerCard}>
+        <Card variant="header" className={styles.headerCard}>
+          <h1 className={styles.pageTitle}>Settings</h1>
         </Card>
 
-        <div className="p-6 flex flex-col gap-6 flex-1">
+        <div className={styles.content}>
           {user && (
             <>
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className={styles.grid}>
                 <Card variant="inner">
-                  <div className="flex items-center gap-5">
+                  <div className={styles.profileRow}>
                     {user.profileImageUrl && (
                       <Image
                         src={user.profileImageUrl}
                         alt="Profile"
                         width={80}
                         height={80}
-                        className="rounded-full ring-2 ring-[var(--accent)]/20"
+                        className={styles.profileImage}
                       />
                     )}
                     <div>
-                      <h2 className="text-2xl font-semibold">{user.username}</h2>
-                      <p className="text-sm text-[var(--text-muted)]">
+                      <h2 className={styles.profileName}>{user.username}</h2>
+                      <p className={styles.profileEmail}>
                         {user.email}
                       </p>
                     </div>
@@ -63,25 +64,25 @@ export default function DashboardContent() {
                 </Card>
 
                 <Card variant="inner">
-                  <h3 className="text-lg font-semibold mb-4">Account Details</h3>
-                  <div className="space-y-3 text-sm text-[var(--text-muted)]">
-                    <div className="flex justify-between">
+                  <h3 className={styles.detailsTitle}>Account Details</h3>
+                  <div className={styles.detailsList}>
+                    <div className={styles.detailsRow}>
                       <span>Account ID</span>
-                      <span className="text-[var(--foreground)]">{user.accountId}</span>
+                      <span className={styles.detailsValue}>{user.accountId}</span>
                     </div>
-                    <div className="flex justify-between">
+                    <div className={styles.detailsRow}>
                       <span>Email</span>
-                      <span className="text-[var(--foreground)]">{user.email}</span>
+                      <span className={styles.detailsValue}>{user.email}</span>
                     </div>
-                    <div className="flex justify-between">
+                    <div className={styles.detailsRow}>
                       <span>Username</span>
-                      <span className="text-[var(--foreground)]">{user.username}</span>
+                      <span className={styles.detailsValue}>{user.username}</span>
                     </div>
                   </div>
                 </Card>
               </div>
 
-              <div className="flex gap-3">
+              <div className={styles.actions}>
                 <Button onClick={() => refetch()} variant="secondary">
                   Refresh Data
                 </Button>

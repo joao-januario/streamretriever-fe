@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Spinner } from '@/components/ui/Spinner';
+import styles from './AuthCallback.module.css';
 
 export default function AuthCallback() {
   const router = useRouter();
@@ -20,7 +21,7 @@ export default function AuthCallback() {
   }, [searchParams, router]);
 
   return (
-    <div className="flex items-center justify-center min-h-screen">
+    <div className={styles.wrapper}>
       <Spinner size="lg" />
     </div>
   );

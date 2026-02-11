@@ -6,6 +6,7 @@ import { Sidebar } from '@/components/ui/Sidebar';
 import { NavItem } from '@/components/ui/NavItem';
 import { NavGroup } from '@/components/ui/NavGroup';
 import navItemStyles from '@/components/ui/NavItem.module.css';
+import sidebarStyles from '@/components/ui/Sidebar.module.css';
 import {
   HomeIcon,
   LayersIcon,
@@ -23,8 +24,8 @@ export default function DashboardSidebar() {
   return (
     <Sidebar
       header={
-        <div className="flex flex-col items-center gap-2">
-          <div className="relative">
+        <div className={sidebarStyles.logoWrapper}>
+          <div className={sidebarStyles.logoInner}>
             <Image
               src="/logo.svg"
               alt="Stream Retriever logo"
@@ -33,7 +34,7 @@ export default function DashboardSidebar() {
             />
             <span className={navItemStyles.betaBadge}>BETA</span>
           </div>
-          <span className="font-bold text-sm tracking-tight text-[var(--sidebar-text-primary)]">
+          <span className={sidebarStyles.brandTitle}>
             Stream Retriever
           </span>
         </div>

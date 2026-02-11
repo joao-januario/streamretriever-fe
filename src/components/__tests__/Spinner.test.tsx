@@ -19,24 +19,21 @@ describe('Spinner', () => {
     render(<Spinner />);
 
     const spinner = screen.getByRole('status');
-    expect(spinner.className).toContain('h-8');
-    expect(spinner.className).toContain('w-8');
+    expect(spinner.className).toContain('md');
   });
 
   it('should apply small size', () => {
     render(<Spinner size="sm" />);
 
     const spinner = screen.getByRole('status');
-    expect(spinner.className).toContain('h-4');
-    expect(spinner.className).toContain('w-4');
+    expect(spinner.className).toContain('sm');
   });
 
   it('should apply large size', () => {
     render(<Spinner size="lg" />);
 
     const spinner = screen.getByRole('status');
-    expect(spinner.className).toContain('h-12');
-    expect(spinner.className).toContain('w-12');
+    expect(spinner.className).toContain('lg');
   });
 
   it('should merge custom className', () => {
@@ -46,10 +43,10 @@ describe('Spinner', () => {
     expect(spinner.className).toContain('custom-class');
   });
 
-  it('should have animation class', () => {
+  it('should have spinner base class', () => {
     render(<Spinner />);
 
     const spinner = screen.getByRole('status');
-    expect(spinner.className).toContain('animate-spin');
+    expect(spinner.className).toContain('spinner');
   });
 });

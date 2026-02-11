@@ -1,0 +1,54 @@
+/* Shared page layout patterns */
+
+/* Full-height page wrapper */
+.wrapper {
+  padding: 1.5rem;
+  height: 100%;
+}
+
+/* Outer card — full-height, no padding */
+.outerCard {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  overflow: hidden;
+}
+
+/* Header card — flush edges */
+.headerCard {
+  border-radius: 0;
+  border: 0;
+  padding: 2rem;
+}
+
+/* Page title */
+.title {
+  font-size: 1.5rem;
+  line-height: 2rem;
+  font-weight: 700;
+}
+
+/* Scrollable content area */
+.content {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  flex: 1;
+}
+
+/* Section heading */
+.sectionTitle {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+/* Muted body text */
+.mutedText {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  color: var(--text-muted);
+}

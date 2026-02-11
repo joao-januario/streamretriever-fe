@@ -11,6 +11,9 @@ Frontend for **Stream Retriever** (Twitch OAuth integration). Backend: Spring Bo
 ### Do NOT Create Summary Files
 Type summaries in chat unless explicitly asked to create a file.
 
+### Writing TSX and CSS
+CSS lives in `.css` files, not in inline `style={{}}` props. TSX files handle structure and logic only.
+
 ### HttpOnly Cookie Authentication
 **NOT localStorage!** Backend sets JWT in HttpOnly cookie (`jwt_token`). Frontend never touches tokens.
 - **All API calls MUST use `credentials: 'include'`** (native fetch, NOT Axios)
@@ -57,18 +60,11 @@ src/
 
 ## Brand & Design — "Stream Retriever" Theme
 - **Personality**: warm, happy, inviting — Twitch-aligned but friendlier than typical dev dashboards
-- **Mascot/Logo**: golden retriever SVG (`public/logo.svg`) shown in sidebar header with "BETA" badge
-- **Sidebar**: purple gradient (`#8f17df` → `#4235cd` → `#4461ba`), white text, logo + "Stream Retriever" title at top
-- **Main area**: dark purple (`#1a1435`), 4-layer card system (background → card → header/inner cards)
-- **Accent**: Twitch purple (`#9146ff`)
-- **Premium**: golden amber (`#facc15`) — shimmer overlay + glow effects on nav item
-- **Card component** (`ui/Card.tsx`): variants `default` (outer), `header` (page title bar), `inner` (content sections)
-
+- 
 ### CSS Architecture
 - **`globals.css`**: theme tokens only (CSS custom properties in `:root`) — colors, timings, etc.
 - **`*.module.css`**: component-specific styles co-located next to their `.tsx` files (CSS Modules)
 - **Tailwind utilities**: used inline in JSX for layout (positioning, flex, spacing)
-- **Rule**: CSS lives in `.css` files, not in inline `style={{}}` props. TSX files handle structure and logic only.
 
 ---
 **Need more context?** Check `/docs/*.md` for technical details on specific areas.

@@ -1,4 +1,5 @@
 import DashboardSidebar from '@/components/DashboardSidebar';
+import styles from './layout.module.css';
 
 export default function AppLayout({
   children,
@@ -6,9 +7,9 @@ export default function AppLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex h-screen bg-background">
+    <div className={styles.layout}>
       <DashboardSidebar />
-      <main className="flex-1 overflow-y-auto">
+      <main className={styles.main}>
         {children}
       </main>
     </div>

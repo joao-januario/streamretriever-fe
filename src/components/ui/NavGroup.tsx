@@ -19,28 +19,25 @@ export function NavGroup({ icon, label, children, defaultOpen = false }: NavGrou
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="group flex items-center gap-3 w-full px-3 py-2 rounded-lg text-sm font-medium text-[var(--sidebar-text-secondary)] hover:text-[var(--sidebar-text-primary)] hover:bg-[var(--sidebar-surface-hover)] transition-all duration-[var(--duration-normal)] ease-[var(--ease-smooth)] outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]/50"
+        className={styles.button}
       >
         {icon && (
-          <span className="w-5 h-5 flex-shrink-0 transition-transform duration-[var(--duration-fast)] ease-[var(--ease-spring)] group-hover:scale-110">
+          <span className={styles.icon}>
             {icon}
           </span>
         )}
-        <span className="flex-1 text-left">{label}</span>
+        <span className={styles.label}>{label}</span>
         <ChevronDownIcon
-          className={`w-4 h-4 text-[var(--sidebar-text-muted)] transition-transform duration-[var(--duration-normal)] ease-[var(--ease-spring)] ${
-            isOpen ? 'rotate-180' : ''
-          }`}
+          className={`${styles.chevron} ${isOpen ? styles.chevronOpen : ''}`}
         />
       </button>
 
-      {/* Animated expand/collapse via CSS grid trick */}
       <div
         className={styles.content}
         data-open={isOpen}
       >
         <div>
-          <div className="ml-4 mt-1 space-y-1 py-0.5">
+          <div className={styles.children}>
             {children}
           </div>
         </div>

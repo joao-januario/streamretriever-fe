@@ -24,47 +24,42 @@ describe('Button', () => {
     render(<Button>Primary</Button>);
 
     const button = screen.getByRole('button');
-    expect(button.className).toContain('bg-[var(--btn-primary-bg)]');
+    expect(button.className).toContain('primary');
   });
 
   it('should apply secondary variant', () => {
     render(<Button variant="secondary">Secondary</Button>);
 
     const button = screen.getByRole('button');
-    expect(button.className).toContain('bg-[var(--btn-secondary-bg)]');
+    expect(button.className).toContain('secondary');
   });
 
   it('should apply danger variant', () => {
     render(<Button variant="danger">Danger</Button>);
 
     const button = screen.getByRole('button');
-    expect(button.className).toContain('bg-[var(--btn-danger-bg)]');
+    expect(button.className).toContain('danger');
   });
 
   it('should apply small size', () => {
     render(<Button size="sm">Small</Button>);
 
     const button = screen.getByRole('button');
-    expect(button.className).toContain('px-3');
-    expect(button.className).toContain('py-1.5');
-    expect(button.className).toContain('text-sm');
+    expect(button.className).toContain('sm');
   });
 
   it('should apply medium size by default', () => {
     render(<Button>Medium</Button>);
 
     const button = screen.getByRole('button');
-    expect(button.className).toContain('px-4');
-    expect(button.className).toContain('py-2');
+    expect(button.className).toContain('md');
   });
 
   it('should apply large size', () => {
     render(<Button size="lg">Large</Button>);
 
     const button = screen.getByRole('button');
-    expect(button.className).toContain('px-6');
-    expect(button.className).toContain('py-3');
-    expect(button.className).toContain('text-base');
+    expect(button.className).toContain('lg');
   });
 
   it('should merge custom className', () => {

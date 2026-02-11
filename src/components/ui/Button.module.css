@@ -1,0 +1,85 @@
+/* Base button */
+.button {
+  border-radius: 0.5rem;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: all var(--duration-normal) var(--ease-smooth);
+  outline: none;
+}
+
+.button:active {
+  transform: scale(0.97);
+}
+
+.button:disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* ─── Variants ─── */
+
+.primary {
+  background: var(--btn-primary-bg);
+  color: white;
+}
+
+.primary:hover {
+  background: var(--btn-primary-hover);
+  box-shadow: 0 10px 15px -3px color-mix(in srgb, var(--btn-primary-bg) 25%, transparent);
+}
+
+.primary:focus-visible {
+  outline: 2px solid var(--btn-primary-bg);
+  outline-offset: 2px;
+}
+
+.secondary {
+  background: var(--btn-secondary-bg);
+  color: var(--sidebar-text-primary);
+  border: 1px solid var(--sidebar-border);
+}
+
+.secondary:hover {
+  background: var(--btn-secondary-hover);
+}
+
+.secondary:focus-visible {
+  outline: 2px solid var(--btn-secondary-hover);
+  outline-offset: 2px;
+}
+
+.danger {
+  background: var(--btn-danger-bg);
+  color: white;
+}
+
+.danger:hover {
+  background: var(--btn-danger-hover);
+  box-shadow: 0 10px 15px -3px color-mix(in srgb, var(--btn-danger-bg) 25%, transparent);
+}
+
+.danger:focus-visible {
+  outline: 2px solid var(--btn-danger-bg);
+  outline-offset: 2px;
+}
+
+/* ─── Sizes ─── */
+
+.sm {
+  padding: 0.375rem 0.75rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.md {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.lg {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  line-height: 1.5rem;
+}

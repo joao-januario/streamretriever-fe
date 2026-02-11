@@ -1,5 +1,12 @@
 /* Sidebar shell */
 .sidebar {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 16rem;
+  flex-shrink: 0;
+  overflow: hidden;
   background: linear-gradient(180deg, var(--sidebar-bg-from) 0%, var(--sidebar-bg-via) 40%, var(--sidebar-bg-to) 100%);
   border-right: 1px solid var(--sidebar-border);
   animation: sidebar-fade-in var(--duration-slow) var(--ease-smooth) both;
@@ -17,6 +24,12 @@
 }
 
 /* Noise texture overlay for atmosphere */
+.noise {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
 .noise::before {
   content: "";
   position: absolute;
@@ -31,6 +44,13 @@
 
 /* Subtle radial glow at top for depth */
 .glow {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 12rem;
+  height: 12rem;
+  pointer-events: none;
   background: radial-gradient(ellipse at center, var(--accent-glow) 0%, transparent 70%);
   filter: blur(40px);
   opacity: 0.5;
@@ -38,11 +58,52 @@
 
 /* Header section */
 .header {
+  position: relative;
+  z-index: 10;
+  padding: 1.25rem 1rem;
   border-bottom: 1px solid var(--sidebar-border);
+}
+
+/* Navigation section */
+.nav {
+  position: relative;
+  z-index: 10;
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
 }
 
 /* Footer section */
 .footer {
+  position: relative;
+  z-index: 10;
+  padding: 1rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
   border-top: 1px solid var(--sidebar-border);
   background: linear-gradient(to top, rgba(0, 0, 0, 0.06) 0%, transparent 100%);
+}
+
+/* Brand logo wrapper */
+.logoWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.logoInner {
+  position: relative;
+}
+
+/* Brand title next to logo */
+.brandTitle {
+  font-weight: 700;
+  font-size: 1.5rem;
+  letter-spacing: -0.025em;
+  color: var(--sidebar-text-primary);
 }
