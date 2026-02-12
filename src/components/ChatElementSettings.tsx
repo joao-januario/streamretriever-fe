@@ -1,324 +1,295 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Element, CreateChatElementRequest, UpdateChatElementRequest } from '@/types/element';
+import { Element, UpdateChatElementRequest } from '@/types/element';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import styles from './ChatElementSettings.module.css';
 
 interface ChatElementSettingsProps {
   element: Element | null;
-  isNew: boolean;
-  onSave: (data: CreateChatElementRequest | UpdateChatElementRequest) => void;
+  onSave: (data: UpdateChatElementRequest) => Promise<void>;
   onDelete: () => void;
-  onCancel: () => void;
 }
 
-const DEFAULTS = {
-  name: '',
-  fontFamily: 'Open Sans',
-  fontSize: 16,
-  fontWeight: 'normal',
-  fontColor: '#ffffff',
-  strokeEnabled: false,
-  strokeColor: '#000000',
-  strokeSize: 1,
-  shadowEnabled: false,
-  shadowColor: '#000000',
-  shadowSize: 2,
-  backgroundColor: '#000000',
-  backgroundOpacity: 0,
+/* ── Preset maps ── */
+
+const SIZE_MAP: Record<string, number> = { Small: 14, Medium: 18, Large: 24 };
+
+const STROKE_MAP: Record<string, { enabled: boolean; size: number }> = {
+  Off:    { enabled: false, size: 0 },
+  Thin:   { enabled: true,  size: 0.9 },
+  Medium: { enabled: true,  size: 1.3 },
+  Thick:  { enabled: true,  size: 2 },
 };
 
-export function ChatElementSettings({ element, isNew, onSave, onDelete, onCancel }: ChatElementSettingsProps) {
-  const [name, setName] = useState(DEFAULTS.name);
-  const [fontFamily, setFontFamily] = useState(DEFAULTS.fontFamily);
-  const [fontSize, setFontSize] = useState(DEFAULTS.fontSize);
-  const [fontWeight, setFontWeight] = useState(DEFAULTS.fontWeight);
-  const [fontColor, setFontColor] = useState(DEFAULTS.fontColor);
-  const [strokeEnabled, setStrokeEnabled] = useState(DEFAULTS.strokeEnabled);
-  const [strokeColor, setStrokeColor] = useState(DEFAULTS.strokeColor);
-  const [strokeSize, setStrokeSize] = useState(DEFAULTS.strokeSize);
-  const [shadowEnabled, setShadowEnabled] = useState(DEFAULTS.shadowEnabled);
-  const [shadowColor, setShadowColor] = useState(DEFAULTS.shadowColor);
-  const [shadowSize, setShadowSize] = useState(DEFAULTS.shadowSize);
-  const [backgroundColor, setBackgroundColor] = useState(DEFAULTS.backgroundColor);
-  const [backgroundOpacity, setBackgroundOpacity] = useState(DEFAULTS.backgroundOpacity);
+const SHADOW_MAP: Record<string, { enabled: boolean; size: number }> = {
+  Off:    { enabled: false, size: 0 },
+  Small:  { enabled: true,  size: 2 },
+  Medium: { enabled: true,  size: 4 },
+  Large:  { enabled: true,  size: 6 },
+};
+
+/* ── Reverse lookups ── */
+
+function sizeToPreset(fontSize: number): string {
+  let closest = 'Medium';
+  let minDiff = Infinity;
+  for (const [name, px] of Object.entries(SIZE_MAP)) {
+    const diff = Math.abs(px - fontSize);
+    if (diff < minDiff) { minDiff = diff; closest = name; }
+  }
+  return closest;
+}
+
+function strokeToPreset(enabled: boolean, size: number): string {
+  if (!enabled) return 'Off';
+  if (size <= 1) return 'Thin';
+  if (size <= 2) return 'Medium';
+  return 'Thick';
+}
+
+function shadowToPreset(enabled: boolean, size: number | null): string {
+  if (!enabled) return 'Off';
+  const s = size ?? 0;
+  if (s <= 2) return 'Small';
+  if (s <= 4) return 'Medium';
+  return 'Large';
+}
+
+/* ── Component ── */
+
+export function ChatElementSettings({ element, onSave, onDelete }: ChatElementSettingsProps) {
+  const [size, setSize] = useState('Medium');
+  const [fontFamily, setFontFamily] = useState('Open Sans');
+  const [fontColor, setFontColor] = useState('#ffffff');
+  const [bold, setBold] = useState(false);
+  const [stroke, setStroke] = useState('Off');
+  const [shadow, setShadow] = useState('Off');
+  const [previewBg, setPreviewBg] = useState('#1e1840');
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     if (element?.elementChat) {
       const chat = element.elementChat;
-      setName(element.name);
+      setSize(sizeToPreset(chat.fontSize));
       setFontFamily(chat.fontFamily);
-      setFontSize(chat.fontSize);
-      setFontWeight(chat.fontWeight);
       setFontColor(chat.fontColor);
-      setStrokeEnabled(chat.strokeEnabled);
-      setStrokeColor(chat.strokeColor);
-      setStrokeSize(chat.strokeSize);
-      setShadowEnabled(chat.shadowEnabled);
-      setShadowColor(chat.shadowColor ?? '#000000');
-      setShadowSize(chat.shadowSize ?? 2);
-      setBackgroundColor(chat.backgroundColor ?? '#000000');
-      setBackgroundOpacity(chat.backgroundOpacity ?? 0);
-    } else if (isNew) {
-      setName(DEFAULTS.name);
-      setFontFamily(DEFAULTS.fontFamily);
-      setFontSize(DEFAULTS.fontSize);
-      setFontWeight(DEFAULTS.fontWeight);
-      setFontColor(DEFAULTS.fontColor);
-      setStrokeEnabled(DEFAULTS.strokeEnabled);
-      setStrokeColor(DEFAULTS.strokeColor);
-      setStrokeSize(DEFAULTS.strokeSize);
-      setShadowEnabled(DEFAULTS.shadowEnabled);
-      setShadowColor(DEFAULTS.shadowColor);
-      setShadowSize(DEFAULTS.shadowSize);
-      setBackgroundColor(DEFAULTS.backgroundColor);
-      setBackgroundOpacity(DEFAULTS.backgroundOpacity);
+      setBold(chat.fontWeight === 'bold');
+      setStroke(strokeToPreset(chat.strokeEnabled, chat.strokeSize));
+      setShadow(shadowToPreset(chat.shadowEnabled, chat.shadowSize));
+    } else {
+      setSize('Medium');
+      setFontFamily('Roboto');
+      setFontColor('#ffffff');
+      setBold(false);
+      setStroke('Off');
+      setShadow('Off');
     }
     setShowDeleteConfirm(false);
-  }, [element, isNew]);
+  }, [element]);
 
-  function handleSave() {
-    if (isNew) {
-      const data: CreateChatElementRequest = { name };
-      onSave(data);
-    } else {
+  async function handleSave() {
+    setIsSaving(true);
+    try {
+      const strokeVal = STROKE_MAP[stroke];
+      const shadowVal = SHADOW_MAP[shadow];
       const data: UpdateChatElementRequest = {
         fontFamily,
-        fontSize,
-        fontWeight,
+        fontSize: SIZE_MAP[size],
+        fontWeight: bold ? 'bold' : 'normal',
         fontColor,
-        strokeEnabled,
-        strokeColor,
-        strokeSize,
-        shadowEnabled,
-        shadowColor,
-        shadowSize,
-        backgroundColor: backgroundOpacity > 0 ? backgroundColor : undefined,
-        backgroundOpacity: backgroundOpacity > 0 ? backgroundOpacity : undefined,
+        strokeEnabled: strokeVal.enabled,
+        strokeColor: '#000000',
+        strokeSize: strokeVal.size,
+        shadowEnabled: shadowVal.enabled,
+        shadowColor: '#000000',
+        shadowSize: shadowVal.size,
       };
-      onSave(data);
+      await onSave(data);
+    } finally {
+      setIsSaving(false);
     }
   }
 
-  const previewStyle: React.CSSProperties = {
+  function handleDelete() {
+    setShowDeleteConfirm(false);
+    onDelete();
+  }
+
+  // Preview computed styles
+  const strokeVal = STROKE_MAP[stroke];
+  const shadowVal = SHADOW_MAP[shadow];
+  const previewFontSize = SIZE_MAP[size];
+
+  // Build text-shadow: circular outline (no blur) + soft outer pass for anti-aliasing
+  const shadows: string[] = [];
+  if (strokeVal.enabled) {
+    const s = strokeVal.size;
+    const STEPS = 20;
+    for (let i = 0; i < STEPS; i++) {
+      const angle = (2 * Math.PI * i) / STEPS;
+      const x = (Math.cos(angle) * s).toFixed(2);
+      const y = (Math.sin(angle) * s).toFixed(2);
+      shadows.push(`${x}px ${y}px 0 #000`);
+    }
+    // soft outer glow for smoother anti-aliased edge
+    shadows.push(`0 0 ${s * 0.75}px #000`);
+  }
+  if (shadowVal.enabled) {
+    shadows.push(`${shadowVal.size}px ${shadowVal.size}px ${shadowVal.size * 1.5}px #000000`);
+  }
+
+  const textStyle: React.CSSProperties = {
     fontFamily,
-    fontSize: `${fontSize}px`,
-    fontWeight,
-    color: fontColor,
-    textShadow: shadowEnabled ? `${shadowSize}px ${shadowSize}px ${shadowSize}px ${shadowColor}` : undefined,
-    WebkitTextStroke: strokeEnabled ? `${strokeSize}px ${strokeColor}` : undefined,
-    backgroundColor: backgroundOpacity > 0 ? `${backgroundColor}${Math.round(backgroundOpacity * 255).toString(16).padStart(2, '0')}` : 'transparent',
-    padding: '0.75rem 1rem',
-    borderRadius: '0.5rem',
+    fontSize: `${previewFontSize}px`,
+    fontWeight: bold ? 'bold' : 'normal',
+    textShadow: shadows.length > 0 ? shadows.join(', ') : undefined,
   };
 
   return (
     <Card variant="inner" className={styles.panel}>
-      <h3 className={styles.panelTitle}>{isNew ? 'Create Chat Element' : 'Edit Settings'}</h3>
+      {/* Primary action */}
+      <div className={styles.topAction}>
+        <Button onClick={handleSave} disabled={isSaving}>
+          {isSaving ? 'Saving\u2026' : element ? 'Update' : 'Create'}
+        </Button>
+      </div>
 
-      {/* Live Preview — only when editing */}
-      {!isNew && (
-        <div className={styles.previewArea}>
-          <span className={styles.previewLabel}>Preview</span>
-          <div className={styles.previewBox}>
-            <span style={previewStyle}>Hello, World!</span>
-          </div>
-        </div>
-      )}
-
-      <div className={styles.form}>
-        {/* Name */}
-        {isNew && (
-          <label className={styles.field}>
-            <span className={styles.label}>Name</span>
-            <input
-              type="text"
-              className={styles.input}
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="My Chat Element"
-            />
-          </label>
-        )}
-
-        {/* Style settings only shown when editing an existing element */}
-        {!isNew && <>
-        {/* Font Family */}
+      {/* Settings grid */}
+      <div className={styles.settingsGrid}>
         <label className={styles.field}>
-          <span className={styles.label}>Font Family</span>
+          <span className={styles.label}>Size</span>
+          <select className={styles.select} value={size} onChange={(e) => setSize(e.target.value)}>
+            {Object.keys(SIZE_MAP).map((key) => (
+              <option key={key} value={key}>{key}</option>
+            ))}
+          </select>
+        </label>
+
+        <label className={styles.field}>
+          <span className={styles.label}>Stroke</span>
+          <select className={styles.select} value={stroke} onChange={(e) => setStroke(e.target.value)}>
+            {Object.keys(STROKE_MAP).map((key) => (
+              <option key={key} value={key}>{key}</option>
+            ))}
+          </select>
+        </label>
+
+        <label className={styles.field}>
+          <span className={styles.label}>Font</span>
           <select className={styles.select} value={fontFamily} onChange={(e) => setFontFamily(e.target.value)}>
             <option value="Open Sans">Open Sans</option>
             <option value="Roboto">Roboto</option>
           </select>
         </label>
 
-        {/* Font Size & Weight */}
-        <div className={styles.row}>
-          <label className={styles.field}>
-            <span className={styles.label}>Font Size</span>
-            <input
-              type="number"
-              className={styles.input}
-              value={fontSize}
-              onChange={(e) => setFontSize(Number(e.target.value))}
-              min={8}
-              max={72}
-            />
-          </label>
-          <label className={styles.field}>
-            <span className={styles.label}>Font Weight</span>
-            <select className={styles.select} value={fontWeight} onChange={(e) => setFontWeight(e.target.value)}>
-              <option value="normal">Normal</option>
-              <option value="bold">Bold</option>
-            </select>
-          </label>
-        </div>
-
-        {/* Font Color */}
         <label className={styles.field}>
-          <span className={styles.label}>Font Color</span>
-          <div className={styles.colorRow}>
-            <input
-              type="color"
-              className={styles.colorInput}
-              value={fontColor}
-              onChange={(e) => setFontColor(e.target.value)}
-            />
-            <input
-              type="text"
-              className={styles.input}
-              value={fontColor}
-              onChange={(e) => setFontColor(e.target.value)}
-            />
-          </div>
+          <span className={styles.label}>Shadow</span>
+          <select className={styles.select} value={shadow} onChange={(e) => setShadow(e.target.value)}>
+            {Object.keys(SHADOW_MAP).map((key) => (
+              <option key={key} value={key}>{key}</option>
+            ))}
+          </select>
         </label>
 
-        {/* Stroke */}
-        <fieldset className={styles.section}>
-          <legend className={styles.sectionTitle}>
-            <label className={styles.toggle}>
-              <input
-                type="checkbox"
-                checked={strokeEnabled}
-                onChange={(e) => setStrokeEnabled(e.target.checked)}
-              />
-              <span>Stroke</span>
-            </label>
-          </legend>
-          <div className={styles.row}>
-            <label className={styles.field}>
-              <span className={styles.label}>Color</span>
-              <input
-                type="color"
-                className={styles.colorInput}
-                value={strokeColor}
-                onChange={(e) => setStrokeColor(e.target.value)}
-                disabled={!strokeEnabled}
-              />
-            </label>
-            <label className={styles.field}>
-              <span className={styles.label}>Size</span>
-              <input
-                type="number"
-                className={styles.input}
-                value={strokeSize}
-                onChange={(e) => setStrokeSize(Number(e.target.value))}
-                min={1}
-                max={10}
-                disabled={!strokeEnabled}
-              />
-            </label>
-          </div>
-        </fieldset>
-
-        {/* Shadow */}
-        <fieldset className={styles.section}>
-          <legend className={styles.sectionTitle}>
-            <label className={styles.toggle}>
-              <input
-                type="checkbox"
-                checked={shadowEnabled}
-                onChange={(e) => setShadowEnabled(e.target.checked)}
-              />
-              <span>Shadow</span>
-            </label>
-          </legend>
-          <div className={styles.row}>
-            <label className={styles.field}>
-              <span className={styles.label}>Color</span>
-              <input
-                type="color"
-                className={styles.colorInput}
-                value={shadowColor}
-                onChange={(e) => setShadowColor(e.target.value)}
-                disabled={!shadowEnabled}
-              />
-            </label>
-            <label className={styles.field}>
-              <span className={styles.label}>Size</span>
-              <input
-                type="number"
-                className={styles.input}
-                value={shadowSize}
-                onChange={(e) => setShadowSize(Number(e.target.value))}
-                min={1}
-                max={20}
-                disabled={!shadowEnabled}
-              />
-            </label>
-          </div>
-        </fieldset>
-
-        {/* Background */}
-        <fieldset className={styles.section}>
-          <legend className={styles.sectionTitle}>Background</legend>
-          <div className={styles.row}>
-            <label className={styles.field}>
-              <span className={styles.label}>Color</span>
-              <input
-                type="color"
-                className={styles.colorInput}
-                value={backgroundColor}
-                onChange={(e) => setBackgroundColor(e.target.value)}
-              />
-            </label>
-            <label className={styles.field}>
-              <span className={styles.label}>Opacity</span>
-              <div className={styles.rangeRow}>
-                <input
-                  type="range"
-                  className={styles.range}
-                  value={backgroundOpacity}
-                  onChange={(e) => setBackgroundOpacity(Number(e.target.value))}
-                  min={0}
-                  max={1}
-                  step={0.1}
-                />
-                <span className={styles.rangeValue}>{backgroundOpacity.toFixed(1)}</span>
-              </div>
-            </label>
-          </div>
-        </fieldset>
-        </>}
+        <label className={styles.toggle}>
+          <input
+            type="checkbox"
+            checked={bold}
+            onChange={(e) => setBold(e.target.checked)}
+          />
+          <span>Bold</span>
+        </label>
       </div>
 
-      {/* Actions */}
-      <div className={styles.actions}>
-        <Button onClick={handleSave} disabled={isNew && !name.trim()}>
-          {isNew ? 'Create' : 'Save'}
-        </Button>
-        <Button variant="secondary" onClick={onCancel}>
-          Cancel
-        </Button>
-        {!isNew && (
-          showDeleteConfirm ? (
+      {/* Font color */}
+      <label className={styles.field}>
+        <span className={styles.label}>Font Color</span>
+        <div className={styles.colorRow}>
+          <input
+            type="color"
+            className={styles.colorSwatch}
+            value={fontColor}
+            onChange={(e) => setFontColor(e.target.value)}
+          />
+          <input
+            type="text"
+            className={styles.colorHex}
+            value={fontColor}
+            onChange={(e) => setFontColor(e.target.value)}
+          />
+        </div>
+      </label>
+
+      {/* Preview */}
+      <div className={styles.previewArea}>
+        <div className={styles.previewHeader}>
+          <span>Preview</span>
+          <input
+            type="color"
+            className={styles.previewBgPicker}
+            value={previewBg}
+            onChange={(e) => setPreviewBg(e.target.value)}
+            title="Preview background color"
+          />
+        </div>
+        <div className={styles.previewBox} style={{ backgroundColor: previewBg }}>
+          {/* Message 1: text only, no emotes */}
+          <div className={styles.chatLine}>
+            <span style={textStyle}>
+              <span className={styles.previewUsername} style={{ color: '#e6a817' }}>GoldenViewer</span>
+              <span style={{ color: fontColor }}>{': gg wp that was insane'}</span>
+            </span>
+          </div>
+
+          {/* Message 2: badges + KEKW */}
+          <div className={styles.chatLine}>
+            <span className={styles.badgeGroup}>
+              <img className={styles.badge} src="/emotes/badge-subscriber.png" alt="Subscriber" draggable={false} />
+              <img className={styles.badge} src="/emotes/badge-moderator.png" alt="Moderator" draggable={false} />
+            </span>
+            <span style={textStyle}>
+              <span className={styles.previewUsername} style={{ color: '#b565e0' }}>YourModerator</span>
+              <span style={{ color: fontColor }}>{': Nice stream! '}</span>
+            </span>
+            <img className={styles.emote} src="/emotes/kekw.png" alt="KEKW" draggable={false} />
+          </div>
+
+          {/* Message 3: PepeLaugh animated */}
+          <div className={styles.chatLine}>
+            <span className={styles.badgeGroup}>
+              <img className={styles.badge} src="/emotes/badge-subscriber.png" alt="Subscriber" draggable={false} />
+            </span>
+            <span style={textStyle}>
+              <span className={styles.previewUsername} style={{ color: '#00ad03' }}>LaughingAndy</span>
+              <span style={{ color: fontColor }}>{': no way '}</span>
+            </span>
+            <img className={styles.emote} src="/emotes/pepelaugh.gif" alt="PepeLaugh" draggable={false} />
+          </div>
+
+          {/* Message 4: PartyKirby spam */}
+          <div className={styles.chatLine}>
+            <span style={textStyle}>
+              <span className={styles.previewUsername} style={{ color: '#1e90ff' }}>CatVibes420</span>
+              <span style={{ color: fontColor }}>{': '}</span>
+            </span>
+            {Array.from({ length: 12 }, (_, i) => (
+              <img key={i} className={styles.emote} src="/emotes/catjam.gif" alt="catJAM" draggable={false} />
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Delete action */}
+      {element && (
+        <div className={styles.actions}>
+          {showDeleteConfirm ? (
             <div className={styles.deleteConfirm}>
-              <span className={styles.deleteText}>Delete this element?</span>
-              <Button variant="danger" size="sm" onClick={onDelete}>
-                Confirm
+              <span className={styles.deleteText}>Delete?</span>
+              <Button variant="danger" size="sm" onClick={handleDelete}>
+                Yes
               </Button>
               <Button variant="secondary" size="sm" onClick={() => setShowDeleteConfirm(false)}>
                 No
@@ -328,9 +299,9 @@ export function ChatElementSettings({ element, isNew, onSave, onDelete, onCancel
             <Button variant="danger" onClick={() => setShowDeleteConfirm(true)}>
               Delete
             </Button>
-          )
-        )}
-      </div>
+          )}
+        </div>
+      )}
     </Card>
   );
 }

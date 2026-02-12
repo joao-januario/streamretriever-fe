@@ -60,7 +60,8 @@ src/
 
 ## Brand & Design — "Stream Retriever" Theme
 - **Personality**: warm, happy, inviting — Twitch-aligned but friendlier than typical dev dashboards
-- 
+- **Design quality**: Every FE change must be polished and modern. Use proper design skills — no raw browser-default controls. Toggles, checkboxes, pickers etc. must be custom-styled to match the theme.
+
 ### CSS Architecture
 - **`globals.css`**: theme tokens only (CSS custom properties in `:root`) — colors, timings, etc.
 - **`*.module.css`**: component-specific styles co-located next to their `.tsx` files (CSS Modules)

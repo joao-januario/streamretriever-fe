@@ -1,52 +1,38 @@
 'use client';
 
-import { useState } from 'react';
 import { Card } from '@/components/ui/Card';
 import { Spinner } from '@/components/ui/Spinner';
-import { ChatElementList } from '@/components/ChatElementList';
 import { ChatElementSettings } from '@/components/ChatElementSettings';
 import { useElements } from '@/hooks/useElements';
-import { Element, CreateChatElementRequest, UpdateChatElementRequest } from '@/types/element';
+import { apiService } from '@/services/apiService';
+import { UpdateChatElementRequest } from '@/types/element';
 import styles from '@/styles/page.module.css';
 import chatStyles from './chat.module.css';
 
 export default function ChatPage() {
-  const { elements, isLoading, createElement, updateElement, deleteElement } = useElements();
-  const [selectedElement, setSelectedElement] = useState<Element | null>(null);
-  const [isCreating, setIsCreating] = useState(false);
+  const { elements, isLoading, updateElement, deleteElement, refetch } = useElements();
+  const element = elements[0] ?? null;
 
-  function handleSelect(element: Element) {
-    setIsCreating(false);
-    setSelectedElement(element);
-  }
-
-  function handleCreate() {
-    setSelectedElement(null);
-    setIsCreating(true);
-  }
-
-  function handleCancel() {
-    setSelectedElement(null);
-    setIsCreating(false);
-  }
-
-  async function handleSave(data: CreateChatElementRequest | UpdateChatElementRequest) {
-    if (isCreating) {
-      const created = await createElement(data as CreateChatElementRequest);
-      setIsCreating(false);
-      setSelectedElement(created);
-    } else if (selectedElement) {
-      await updateElement(selectedElement.id, data as UpdateChatElementRequest);
-      // Refresh the selected element from the updated list
-      const updated = elements.find((e) => e.id === selectedElement.id);
-      if (updated) setSelectedElement(updated);
+  async function handleSave(data: UpdateChatElementRequest) {
+    if (element) {
+      await updateElement(element.id, data);
+    } else {
+      // Create the element first, then update its chat settings in one flow.
+      // We call the API directly (not the hook's createElement) to avoid
+      // a mid-operation mutate() that would re-render and reset form state.
+      const created = await apiService.createChatElement({ name: 'Chat' });
+      try {
+        await apiService.updateChatElement(created.id, data);
+      } finally {
+        // Always refresh SWR cache so the UI reflects the new element
+        await refetch();
+      }
     }
   }
 
   async function handleDelete() {
-    if (selectedElement) {
-      await deleteElement(selectedElement.id);
-      setSelectedElement(null);
+    if (element) {
+      await deleteElement(element.id);
     }
   }
 
@@ -72,21 +58,11 @@ export default function ChatPage() {
           <h1 className={styles.title}>Chat</h1>
         </Card>
         <div className={styles.content}>
-          <ChatElementList
-            elements={elements}
-            selectedId={selectedElement?.id ?? null}
-            onSelect={handleSelect}
-            onCreate={handleCreate}
+          <ChatElementSettings
+            element={element}
+            onSave={handleSave}
+            onDelete={handleDelete}
           />
-          {(selectedElement || isCreating) && (
-            <ChatElementSettings
-              element={selectedElement}
-              isNew={isCreating}
-              onSave={handleSave}
-              onDelete={handleDelete}
-              onCancel={handleCancel}
-            />
-          )}
         </div>
       </Card>
     </div>

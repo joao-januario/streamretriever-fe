@@ -10,7 +10,14 @@
       "Bash(npx next lint)",
       "Bash(npx eslint:*)",
       "Bash(npx tsc:*)",
-      "Bash(npx vitest run)"
+      "Bash(npx vitest run)",
+      "WebSearch",
+      "WebFetch(domain:7tv.io)",
+      "WebFetch(domain:cdn.betterttv.net)",
+      "Bash(curl:*)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:7tv.app)",
+      "Bash(python3:*)"
     ]
   }
 }
