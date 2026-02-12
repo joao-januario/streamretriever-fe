@@ -55,13 +55,16 @@ export const handlers = [
     return HttpResponse.json(mockElements);
   }),
 
-  // POST /v1/elements/chat
+  // POST /v1/elements/chat?name=...
   http.post(`${API_BASE}/elements/chat`, async ({ request }) => {
+    const url = new URL(request.url);
+    const name = url.searchParams.get('name') || 'New Chat';
     const body = await request.json() as Record<string, unknown>;
     return HttpResponse.json({
       ...mockElements[0],
       id: 2,
-      name: (body.name as string) || 'New Chat',
+      name,
+      elementChat: { ...mockElements[0].elementChat, ...body },
     });
   }),
 

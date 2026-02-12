@@ -41,9 +41,10 @@ export const apiService = {
   },
 
   async createChatElement(data: CreateChatElementRequest): Promise<Element> {
-    return fetchWithAuth<Element>(`${API_BASE}/elements/chat`, {
+    const params = new URLSearchParams({ name: data.name });
+    return fetchWithAuth<Element>(`${API_BASE}/elements/chat?${params}`, {
       method: 'POST',
-      body: JSON.stringify(data),
+      body: JSON.stringify(data.settings),
     });
   },
 

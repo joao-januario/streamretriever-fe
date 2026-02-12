@@ -28,6 +28,7 @@ export interface ElementChat {
 
 export interface CreateChatElementRequest {
   name: string;
+  settings: UpdateChatElementRequest;
 }
 
 export interface UpdateChatElementRequest {
