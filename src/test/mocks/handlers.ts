@@ -93,4 +93,12 @@ export const errorHandlers = {
   networkError: http.get(`${API_BASE}/users/me`, () => {
     return HttpResponse.error();
   }),
+
+  elementsEmpty: http.get(`${API_BASE}/elements`, () => {
+    return HttpResponse.json([]);
+  }),
+
+  elementsSaveError: http.patch(`${API_BASE}/elements/:id/chat`, () => {
+    return new HttpResponse(null, { status: 500 });
+  }),
 };

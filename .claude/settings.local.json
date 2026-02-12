@@ -17,7 +17,8 @@
       "Bash(curl:*)",
       "WebFetch(domain:github.com)",
       "WebFetch(domain:7tv.app)",
-      "Bash(python3:*)"
+      "Bash(python3:*)",
+      "Bash(npx vitest:*)"
     ]
   }
 }

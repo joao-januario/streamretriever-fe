@@ -54,7 +54,8 @@ src/
         ├── Button.test.tsx
         ├── Spinner.test.tsx
         ├── AuthCallback.test.tsx
-        └── DashboardContent.test.tsx
+        ├── DashboardContent.test.tsx
+        └── ChatElementSettings.test.tsx
 e2e/
 ├── auth.spec.ts              # Login/logout flows
 └── dashboard.spec.ts         # Protected route behavior
@@ -82,6 +83,10 @@ playwright.config.ts
 - `Spinner` - Sizes, accessibility (role="status", aria-label)
 - `AuthCallback` - Success redirect to dashboard, error redirect to home
 - `DashboardContent` - Loading spinner, user data display, error state, logout button
+- `ChatElementSettings` - Settings form rendering, preset mappings, save/create/delete flows, preview rendering
+
+**Hooks:**
+- `useElements` - Element CRUD operations, SWR caching, 401 redirect, error handling
 
 ### E2E Tests
 
@@ -162,11 +167,17 @@ Default handlers in `src/test/mocks/handlers.ts`:
 | `/v1/users/me` | GET | Mock user object |
 | `/v1/auth/token` | GET | Mock auth response |
 | `/v1/auth/logout` | POST | 200 OK |
+| `/v1/elements` | GET | Mock elements array |
+| `/v1/elements/chat` | POST | Created element with chat settings |
+| `/v1/elements/:id/chat` | PATCH | Updated chat settings |
+| `/v1/elements/:id` | DELETE | 204 No Content |
 
 Error variants available for testing failure scenarios:
-- `errorHandlers.unauthorized` - 401 response
-- `errorHandlers.serverError` - 500 response
-- `errorHandlers.networkError` - Network failure
+- `errorHandlers.unauthorized` - 401 response for `/v1/users/me`
+- `errorHandlers.serverError` - 500 response for `/v1/users/me`
+- `errorHandlers.networkError` - Network failure for `/v1/users/me`
+- `errorHandlers.elementsEmpty` - Empty elements array
+- `errorHandlers.elementsSaveError` - 500 on PATCH
 
 ---
-*Last updated: February 10, 2026*
+*Last updated: February 12, 2026*
