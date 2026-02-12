@@ -1,5 +1,6 @@
 import { http, HttpResponse } from 'msw';
 import { User } from '@/types/user';
+import { Element } from '@/types/element';
 
 const API_BASE = 'http://localhost:8080/v1';
 
@@ -10,6 +11,34 @@ export const mockUser: User = {
   profileImageUrl: 'https://example.com/avatar.png',
 };
 
+export const mockElements: Element[] = [
+  {
+    id: 1,
+    name: 'Main Chat',
+    elementType: 'CHAT',
+    elementChat: {
+      id: 1,
+      fontFamily: 'Open Sans',
+      fontSize: 16,
+      fontWeight: 'normal',
+      fontColor: '#ffffff',
+      strokeEnabled: false,
+      strokeColor: '#000000',
+      strokeSize: 1,
+      shadowEnabled: false,
+      shadowColor: '#000000',
+      shadowSize: 2,
+      backgroundColor: null,
+      backgroundOpacity: null,
+      extraSettings: null,
+      createdAt: '2024-01-01T00:00:00',
+      updatedAt: '2024-01-01T00:00:00',
+    },
+    createdAt: '2024-01-01T00:00:00',
+    updatedAt: '2024-01-01T00:00:00',
+  },
+];
+
 export const handlers = [
   // GET /v1/users/me
   http.get(`${API_BASE}/users/me`, () => {
@@ -19,6 +48,32 @@ export const handlers = [
   // POST /v1/auth/logout
   http.post(`${API_BASE}/auth/logout`, () => {
     return new HttpResponse(null, { status: 200 });
+  }),
+
+  // GET /v1/elements
+  http.get(`${API_BASE}/elements`, () => {
+    return HttpResponse.json(mockElements);
+  }),
+
+  // POST /v1/elements/chat
+  http.post(`${API_BASE}/elements/chat`, async ({ request }) => {
+    const body = await request.json() as Record<string, unknown>;
+    return HttpResponse.json({
+      ...mockElements[0],
+      id: 2,
+      name: (body.name as string) || 'New Chat',
+    });
+  }),
+
+  // PATCH /v1/elements/:id/chat
+  http.patch(`${API_BASE}/elements/:id/chat`, async ({ request }) => {
+    const body = await request.json() as Record<string, unknown>;
+    return HttpResponse.json({ ...mockElements[0].elementChat, ...body });
+  }),
+
+  // DELETE /v1/elements/:id
+  http.delete(`${API_BASE}/elements/:id`, () => {
+    return new HttpResponse(null, { status: 204 });
   }),
 ];
 

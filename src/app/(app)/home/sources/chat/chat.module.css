@@ -1,0 +1,7 @@
+.loadingArea {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  padding: 3rem;
+}

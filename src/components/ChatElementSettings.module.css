@@ -1,0 +1,170 @@
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.panelTitle {
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+/* Preview */
+.previewArea {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.previewLabel {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.previewBox {
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+}
+
+/* Form */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  flex: 1;
+}
+
+.label {
+  font-size: 0.813rem;
+  color: var(--text-muted);
+}
+
+.input,
+.select {
+  background: var(--card-bg);
+  border: 1px solid var(--card-inner-border);
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  color: var(--foreground);
+  font-size: 0.875rem;
+  outline: none;
+  transition: border-color var(--duration-fast) var(--ease-smooth);
+}
+
+.input:focus,
+.select:focus {
+  border-color: var(--accent);
+}
+
+.input:disabled,
+.select:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.row {
+  display: flex;
+  gap: 1rem;
+}
+
+.colorRow {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.colorInput {
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--card-inner-border);
+  border-radius: 0.375rem;
+  padding: 2px;
+  background: var(--card-bg);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.colorInput:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Sections */
+.section {
+  border: 1px solid var(--card-inner-border);
+  border-radius: 0.5rem;
+  padding: 0.75rem;
+  margin: 0;
+}
+
+.sectionTitle {
+  font-size: 0.875rem;
+  font-weight: 500;
+  padding: 0 0.25rem;
+}
+
+.toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.toggle input[type="checkbox"] {
+  accent-color: var(--accent);
+  width: 16px;
+  height: 16px;
+}
+
+/* Range */
+.rangeRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.range {
+  flex: 1;
+  accent-color: var(--accent);
+}
+
+.rangeValue {
+  font-size: 0.813rem;
+  color: var(--text-muted);
+  min-width: 2rem;
+  text-align: right;
+}
+
+/* Actions */
+.actions {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  flex-wrap: wrap;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--card-inner-border);
+}
+
+.deleteConfirm {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: auto;
+}
+
+.deleteText {
+  font-size: 0.813rem;
+  color: var(--btn-danger-bg);
+}
