@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { Element, UpdateChatElementRequest } from '@/types/element';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
+import { logService } from '@/services/logService';
 import styles from './ChatElementSettings.module.css';
 
 interface ChatElementSettingsProps {
@@ -69,6 +70,7 @@ export function ChatElementSettings({ element, onSave, onDelete }: ChatElementSe
   const [previewBg, setPreviewBg] = useState('#1e1840');
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   useEffect(() => {
     if (element?.elementChat) {
@@ -92,6 +94,7 @@ export function ChatElementSettings({ element, onSave, onDelete }: ChatElementSe
 
   async function handleSave() {
     setIsSaving(true);
+    setSaveError(null);
     try {
       const strokeVal = STROKE_MAP[stroke];
       const shadowVal = SHADOW_MAP[shadow];
@@ -108,6 +111,11 @@ export function ChatElementSettings({ element, onSave, onDelete }: ChatElementSe
         shadowSize: shadowVal.size,
       };
       await onSave(data);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Unknown error';
+      const stack = err instanceof Error ? (err.stack ?? '') : '';
+      logService.error('Chat element save failed', { error: message, stack });
+      setSaveError(`Failed to save: ${message}`);
     } finally {
       setIsSaving(false);
     }
@@ -155,6 +163,7 @@ export function ChatElementSettings({ element, onSave, onDelete }: ChatElementSe
         <Button onClick={handleSave} disabled={isSaving}>
           {isSaving ? 'Saving\u2026' : element ? 'Update' : 'Create'}
         </Button>
+        {saveError && <p className={styles.errorMessage}>{saveError}</p>}
       </div>
 
       {/* Settings grid */}

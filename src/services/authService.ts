@@ -1,3 +1,5 @@
+import { logService } from './logService';
+
 const API_BASE = process.env.NEXT_PUBLIC_API_URL;
 
 export const authService = {
@@ -12,7 +14,9 @@ export const authService = {
         credentials: 'include',
       });
     } catch (error) {
-      console.error('Logout error:', error);
+      const message = error instanceof Error ? error.message : String(error);
+      const stack = error instanceof Error ? (error.stack ?? '') : '';
+      logService.error('Logout failed', { error: message, stack });
     } finally {
       window.location.href = '/';
     }

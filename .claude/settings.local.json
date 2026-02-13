@@ -18,7 +18,10 @@
       "WebFetch(domain:github.com)",
       "WebFetch(domain:7tv.app)",
       "Bash(python3:*)",
-      "Bash(npx vitest:*)"
+      "Bash(npx vitest:*)",
+      "Bash(ls:*)",
+      "WebFetch(domain:sentry.io)",
+      "WebFetch(domain:docs.sentry.io)"
     ]
   }
 }

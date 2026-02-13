@@ -1,5 +1,6 @@
 import { User } from '@/types/user';
 import { Element, ElementChat, CreateChatElementRequest, UpdateChatElementRequest } from '@/types/element';
+import { logService } from './logService';
 
 const API_BASE = `${process.env.NEXT_PUBLIC_API_URL}/v1`;
 
@@ -21,6 +22,9 @@ async function fetchWithAuth<T>(url: string, options: RequestInit = {}): Promise
   }
 
   if (!response.ok) {
+    logService.error(`API ${options.method ?? 'GET'} ${url} failed`, {
+      status: String(response.status),
+    });
     throw new Error(`HTTP error! status: ${response.status}`);
   }
 
@@ -61,6 +65,11 @@ export const apiService = {
       credentials: 'include',
     });
     if (response.status === 401) throw new Error('Unauthorized');
-    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+    if (!response.ok) {
+      logService.error(`API DELETE ${API_BASE}/elements/${id} failed`, {
+        status: String(response.status),
+      });
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
   },
 };

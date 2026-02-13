@@ -1,7 +1,9 @@
 'use client';
 
+import { useEffect } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
+import { logService } from '@/services/logService';
 import styles from './error.module.css';
 
 export default function Error({
@@ -11,6 +13,14 @@ export default function Error({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  useEffect(() => {
+    logService.error('Unhandled error', {
+      error: error.message,
+      stack: error.stack ?? '',
+      ...(error.digest && { digest: error.digest }),
+    });
+  }, [error.message, error.digest]);
+
   return (
     <div className={styles.wrapper}>
       <Card className={styles.card}>
