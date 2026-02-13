@@ -2,12 +2,14 @@
 
 /* Full-height page wrapper */
 .wrapper {
+  box-sizing: border-box;
   padding: 1.5rem;
   height: 100%;
 }
 
 /* Outer card — full-height, no padding */
 .outerCard {
+  box-sizing: border-box;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -17,6 +19,7 @@
 
 /* Header card — flush edges */
 .headerCard {
+  box-sizing: border-box;
   border-radius: 0;
   border: 0;
   padding: 2rem;
@@ -31,6 +34,7 @@
 
 /* Scrollable content area */
 .content {
+  box-sizing: border-box;
   padding: 1.5rem;
   display: flex;
   flex-direction: column;

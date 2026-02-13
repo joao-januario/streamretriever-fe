@@ -2,9 +2,10 @@
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  box-sizing: border-box;
   width: 50%;
   margin: 0 auto;
-  padding: 2.5rem 10rem;
+  padding: 2.5rem 2rem;
 }
 
 /* ── Top action ── */
@@ -143,6 +144,23 @@
 }
 
 .colorHex:focus {
+  border-color: var(--accent);
+}
+
+.colorRgb {
+  background: var(--card-bg);
+  border: 1px solid var(--card-inner-border);
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  color: var(--foreground);
+  font-size: 0.875rem;
+  font-family: var(--font-mono);
+  outline: none;
+  width: 7.5rem;
+  transition: border-color var(--duration-fast) var(--ease-smooth);
+}
+
+.colorRgb:focus {
   border-color: var(--accent);
 }
 
