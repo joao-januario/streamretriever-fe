@@ -243,6 +243,14 @@ export function ChatElementSettings({ element, onSave, onDelete }: ChatElementSe
             onChange={(e) => setPreviewBg(e.target.value)}
             title="Preview background color"
           />
+          <button
+            type="button"
+            className={styles.previewBgReset}
+            onClick={() => setPreviewBg('#1e1840')}
+            title="Reset to card background"
+          >
+            ↺
+          </button>
         </div>
         <div className={styles.previewBox} style={{ backgroundColor: previewBg }}>
           {/* Message 1: text only, no emotes */}
