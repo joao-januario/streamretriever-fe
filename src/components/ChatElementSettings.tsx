@@ -33,12 +33,13 @@ const SHADOW_MAP: Record<string, { enabled: boolean; size: number }> = {
 
 const BG_COLORS = [
   { value: 'transparent', label: 'None' },
-  { value: '#000000', label: 'Black' },
-  { value: '#18181b', label: 'Dark' },
-  { value: '#1e1b4b', label: 'Indigo' },
-  { value: '#1e3a5f', label: 'Navy' },
-  { value: '#14532d', label: 'Forest' },
-  { value: '#4c1d95', label: 'Purple' },
+  { value: 'rgba(0, 0, 0, 0.5)', label: 'Black' },
+  { value: 'rgba(220, 38, 38, 0.2)', label: 'Red' },
+  { value: 'rgba(37, 99, 235, 0.2)', label: 'Blue' },
+  { value: 'rgba(22, 163, 74, 0.2)', label: 'Green' },
+  { value: 'rgba(147, 51, 234, 0.2)', label: 'Purple' },
+  { value: 'rgba(255, 0, 128, 0.2)', label: 'Pink' },
+  { value: 'rgba(234, 210, 30, 0.2)', label: 'Yellow' },
 ];
 
 /* ── Reverse lookups ── */
@@ -100,6 +101,7 @@ export function ChatElementSettings({ element, onSave, onDelete }: ChatElementSe
       setBold(chat.fontWeight === 'bold');
       setStroke(strokeToPreset(chat.strokeEnabled, chat.strokeSize));
       setShadow(shadowToPreset(chat.shadowEnabled, chat.shadowSize));
+      setChatBg(chat.backgroundColor ?? 'transparent');
     } else {
       setSize('Medium');
       setFontFamily('Roboto');
@@ -107,6 +109,7 @@ export function ChatElementSettings({ element, onSave, onDelete }: ChatElementSe
       setBold(false);
       setStroke('Off');
       setShadow('Off');
+      setChatBg('transparent');
     }
     setShowDeleteConfirm(false);
   }, [element]);
@@ -128,6 +131,10 @@ export function ChatElementSettings({ element, onSave, onDelete }: ChatElementSe
         shadowEnabled: shadowVal.enabled,
         shadowColor: '#000000',
         shadowSize: shadowVal.size,
+        ...(chatBg !== 'transparent' && {
+          backgroundColor: chatBg,
+          backgroundOpacity: 1,
+        }),
       };
       await onSave(data);
     } catch (err) {
@@ -389,7 +396,10 @@ export function ChatElementSettings({ element, onSave, onDelete }: ChatElementSe
                 ↺
               </button>
             </div>
-            <div className={styles.previewContent}>
+            <div
+              className={styles.previewContent}
+              style={{ backgroundColor: chatBg }}
+            >
               {/* Message 1: text only */}
               <div className={styles.chatLine}>
                 <span style={textStyle}>

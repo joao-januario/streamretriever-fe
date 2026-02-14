@@ -134,7 +134,7 @@ describe('ChatElementSettings', () => {
       expect(within(sizeGroup).getByRole('radio', { name: 'Large' })).toHaveAttribute('aria-checked', 'true');
       expect(screen.getByLabelText('Font')).toHaveValue('Open Sans');
       expect(within(strokeGroup).getByRole('radio', { name: 'Thin' })).toHaveAttribute('aria-checked', 'true');
-      expect(within(shadowGroup).getByRole('radio', { name: 'Medium' })).toHaveAttribute('aria-checked', 'true');
+      expect(within(shadowGroup).getByRole('radio', { name: 'Large' })).toHaveAttribute('aria-checked', 'true');
     });
   });
 
