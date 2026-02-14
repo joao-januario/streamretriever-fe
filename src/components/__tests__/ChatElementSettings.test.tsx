@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, within } from '@testing-library/react';
 import { ChatElementSettings } from '../ChatElementSettings';
 import { Element } from '@/types/element';
 
@@ -44,24 +44,36 @@ describe('ChatElementSettings', () => {
     it('should render all setting controls', () => {
       renderSettings();
 
-      expect(screen.getByLabelText('Size')).toBeInTheDocument();
+      // Typography
       expect(screen.getByLabelText('Font')).toBeInTheDocument();
-      expect(screen.getByLabelText('Stroke')).toBeInTheDocument();
-      expect(screen.getByLabelText('Shadow')).toBeInTheDocument();
+      expect(screen.getByRole('radiogroup', { name: 'Size' })).toBeInTheDocument();
+      expect(screen.getByText('Font Color')).toBeInTheDocument();
       expect(screen.getByText('Bold')).toBeInTheDocument();
-      expect(screen.getByLabelText('Font Color')).toBeInTheDocument();
+      expect(screen.getByText('All Caps')).toBeInTheDocument();
+
+      // Effects (includes chat background)
+      expect(screen.getByRole('radiogroup', { name: 'Stroke' })).toBeInTheDocument();
+      expect(screen.getByRole('radiogroup', { name: 'Shadow' })).toBeInTheDocument();
+      expect(screen.getByText('Chat Background')).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: 'None' })).toBeInTheDocument();
+
+      // Behavior
+      expect(screen.getByText('Hide Commands')).toBeInTheDocument();
+      expect(screen.getByText('Hide Badges')).toBeInTheDocument();
+      expect(screen.getByText('Hide Bots')).toBeInTheDocument();
+      expect(screen.getByText('Fade Messages')).toBeInTheDocument();
     });
 
-    it('should show "Create" button when no element exists', () => {
+    it('should show "Create Element" button when no element exists', () => {
       renderSettings({ element: null });
 
-      expect(screen.getByRole('button', { name: 'Create' })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: 'Create Element' })).toBeInTheDocument();
     });
 
-    it('should show "Update" button when element exists', () => {
+    it('should show "Update Settings" button when element exists', () => {
       renderSettings({ element: mockElement });
 
-      expect(screen.getByRole('button', { name: 'Update' })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: 'Update Settings' })).toBeInTheDocument();
     });
 
     it('should show delete button only when element exists', () => {
@@ -97,10 +109,17 @@ describe('ChatElementSettings', () => {
     it('should initialize with default values when no element', () => {
       renderSettings({ element: null });
 
-      expect(screen.getByLabelText('Size')).toHaveValue('Medium');
+      const sizeGroup = screen.getByRole('radiogroup', { name: 'Size' });
+      const strokeGroup = screen.getByRole('radiogroup', { name: 'Stroke' });
+      const shadowGroup = screen.getByRole('radiogroup', { name: 'Shadow' });
+
       expect(screen.getByLabelText('Font')).toHaveValue('Roboto');
-      expect(screen.getByLabelText('Stroke')).toHaveValue('Off');
-      expect(screen.getByLabelText('Shadow')).toHaveValue('Off');
+      expect(within(sizeGroup).getByRole('radio', { name: 'Medium' })).toHaveAttribute('aria-checked', 'true');
+      expect(within(strokeGroup).getByRole('radio', { name: 'Off' })).toHaveAttribute('aria-checked', 'true');
+      expect(within(shadowGroup).getByRole('radio', { name: 'Off' })).toHaveAttribute('aria-checked', 'true');
+
+      // Hide Bots defaults to on
+      expect(screen.getByRole('checkbox', { name: 'Hide Bots' })).toBeChecked();
     });
   });
 
@@ -108,19 +127,23 @@ describe('ChatElementSettings', () => {
     it('should populate controls from existing element', () => {
       renderSettings({ element: mockElement });
 
-      expect(screen.getByLabelText('Size')).toHaveValue('Large');
+      const sizeGroup = screen.getByRole('radiogroup', { name: 'Size' });
+      const strokeGroup = screen.getByRole('radiogroup', { name: 'Stroke' });
+      const shadowGroup = screen.getByRole('radiogroup', { name: 'Shadow' });
+
+      expect(within(sizeGroup).getByRole('radio', { name: 'Large' })).toHaveAttribute('aria-checked', 'true');
       expect(screen.getByLabelText('Font')).toHaveValue('Open Sans');
-      expect(screen.getByLabelText('Stroke')).toHaveValue('Thin');
-      expect(screen.getByLabelText('Shadow')).toHaveValue('Medium');
+      expect(within(strokeGroup).getByRole('radio', { name: 'Thin' })).toHaveAttribute('aria-checked', 'true');
+      expect(within(shadowGroup).getByRole('radio', { name: 'Medium' })).toHaveAttribute('aria-checked', 'true');
     });
   });
 
   describe('save', () => {
-    it('should call onSave with current settings when clicking Create', async () => {
+    it('should call onSave with current settings when clicking Create Element', async () => {
       const onSave = vi.fn().mockResolvedValue(undefined);
       renderSettings({ element: null, onSave });
 
-      fireEvent.click(screen.getByRole('button', { name: 'Create' }));
+      fireEvent.click(screen.getByRole('button', { name: 'Create Element' }));
 
       await waitFor(() => {
         expect(onSave).toHaveBeenCalledWith(
@@ -140,9 +163,12 @@ describe('ChatElementSettings', () => {
       const onSave = vi.fn().mockResolvedValue(undefined);
       renderSettings({ element: null, onSave });
 
-      fireEvent.change(screen.getByLabelText('Size'), { target: { value: 'Large' } });
-      fireEvent.change(screen.getByLabelText('Stroke'), { target: { value: 'Thin' } });
-      fireEvent.click(screen.getByRole('button', { name: 'Create' }));
+      const sizeGroup = screen.getByRole('radiogroup', { name: 'Size' });
+      const strokeGroup = screen.getByRole('radiogroup', { name: 'Stroke' });
+
+      fireEvent.click(within(sizeGroup).getByRole('radio', { name: 'Large' }));
+      fireEvent.click(within(strokeGroup).getByRole('radio', { name: 'Thin' }));
+      fireEvent.click(screen.getByRole('button', { name: 'Create Element' }));
 
       await waitFor(() => {
         expect(onSave).toHaveBeenCalledWith(
@@ -161,14 +187,14 @@ describe('ChatElementSettings', () => {
       );
       renderSettings({ element: null, onSave });
 
-      fireEvent.click(screen.getByRole('button', { name: 'Create' }));
+      fireEvent.click(screen.getByRole('button', { name: 'Create Element' }));
 
       expect(screen.getByRole('button', { name: /Saving/ })).toBeDisabled();
 
       resolveSave!();
 
       await waitFor(() => {
-        expect(screen.getByRole('button', { name: 'Create' })).toBeEnabled();
+        expect(screen.getByRole('button', { name: 'Create Element' })).toBeEnabled();
       });
     });
   });

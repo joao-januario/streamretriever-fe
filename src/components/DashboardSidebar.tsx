@@ -44,8 +44,8 @@ export default function DashboardSidebar() {
           <NavItem
             icon={<SparklesIcon />}
             label="Premium"
-            href="/home/premium"
-            active={pathname.startsWith('/home/premium')}
+            href="/premium"
+            active={pathname.startsWith('/premium')}
             variant="premium"
           />
           <NavItem
@@ -71,25 +71,25 @@ export default function DashboardSidebar() {
         <NavItem
           icon={<ChatBubbleIcon />}
           label="Chat"
-          href="/home/sources/chat"
-          active={pathname === '/home/sources/chat'}
+          href="/sources/chat"
+          active={pathname === '/sources/chat'}
         />
         <NavItem
           icon={<BellIcon />}
           label="Alerts"
-          href="/home/sources/alerts"
-          active={pathname === '/home/sources/alerts'}
+          href="/sources/alerts"
+          active={pathname === '/sources/alerts'}
         />
       </NavGroup>
       <NavItem
         icon={<BookOpenIcon />}
         label="Library"
-        href="/home/library"
+        href="/library"
       />
       <NavItem
         icon={<RectangleGroupIcon />}
         label="Panels"
-        href="/home/panels"
+        href="/panels"
       />
     </Sidebar>
   );

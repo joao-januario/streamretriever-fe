@@ -23,7 +23,7 @@ CSS lives in `.css` files, not in inline `style={{}}` props. TSX files handle st
 
 ### Middleware
 `src/middleware.ts` checks the `jwt_token` cookie for route protection:
-- `/home/*` and `/settings/*` require cookie → redirects to `/` if missing
+- `/home/*`, `/settings/*`, `/sources/*`, `/premium/*`, `/library/*`, `/panels/*` require cookie → redirects to `/` if missing
 - `/` redirects to `/home` if cookie present
 - `/auth/callback` always passes through
 
@@ -32,7 +32,9 @@ CSS lives in `.css` files, not in inline `style={{}}` props. TSX files handle st
 src/
 ├── app/                  # Next.js App Router pages
 │   ├── (app)/            # Route group — shared layout with sidebar
-│   │   ├── home/         # Home page + nested: premium, sources/chat, sources/alerts
+│   │   ├── home/         # Home page
+│   │   ├── sources/      # Sources — chat, alerts
+│   │   ├── premium/      # Premium page
 │   │   ├── settings/     # User profile/settings (DashboardContent)
 │   │   └── error.tsx     # Error boundary for app routes
 │   ├── auth/callback/    # OAuth callback handler

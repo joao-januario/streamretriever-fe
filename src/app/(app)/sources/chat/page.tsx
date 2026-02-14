@@ -44,16 +44,11 @@ export default function ChatPage() {
   return (
     <div className={styles.wrapper}>
       <Card className={styles.outerCard}>
-        <Card variant="header" className={styles.headerCard}>
-          <h1 className={styles.title}>Chat</h1>
-        </Card>
-        <div className={styles.content}>
-          <ChatElementSettings
-            element={element}
-            onSave={handleSave}
-            onDelete={handleDelete}
-          />
-        </div>
+        <ChatElementSettings
+          element={element}
+          onSave={handleSave}
+          onDelete={handleDelete}
+        />
       </Card>
     </div>
   );

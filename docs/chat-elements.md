@@ -5,7 +5,7 @@ This document describes the chat element feature — the settings UI for customi
 ## Architecture
 
 ### Single-Element Model
-Each user has at most **one** chat element. The chat page (`/home/sources/chat`) hides the concept of "elements" from the user — it simply shows a settings form.
+Each user has at most **one** chat element. The chat page (`/sources/chat`) hides the concept of "elements" from the user — it simply shows a settings form.
 
 - **No element yet** → form shows defaults, button says "Create"
 - **Element exists** → form loads saved settings, button says "Update"
@@ -70,7 +70,7 @@ The preview shows 4 mock chat messages with:
 
 ```
 src/
-├── app/(app)/home/sources/chat/
+├── app/(app)/sources/chat/
 │   ├── page.tsx              # Chat page — thin wrapper, handles create/update/delete
 │   └── chat.module.css       # Loading state styles
 ├── components/

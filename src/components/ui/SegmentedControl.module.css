@@ -1,0 +1,48 @@
+/* ── SegmentedControl ── */
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.label {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  letter-spacing: 0.02em;
+}
+
+.track {
+  display: flex;
+  background: var(--card-inner-bg);
+  border: 1px solid var(--card-inner-border);
+  border-radius: 0.5rem;
+  padding: 3px;
+  gap: 2px;
+  box-sizing: border-box;
+}
+
+.pill {
+  flex: 1;
+  padding: 0.4rem 0.625rem;
+  font-size: 0.813rem;
+  font-weight: 500;
+  border: none;
+  border-radius: 0.375rem;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-smooth);
+  box-sizing: border-box;
+}
+
+.pill:hover:not(.active) {
+  background: var(--accent-soft);
+  color: var(--foreground);
+}
+
+.active {
+  background: var(--accent);
+  color: #fff;
+  box-shadow: 0 0 12px var(--accent-glow), 0 2px 4px rgba(0, 0, 0, 0.2);
+}

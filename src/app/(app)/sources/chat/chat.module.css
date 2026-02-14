@@ -1,3 +1,7 @@
+.contentNoScroll {
+  overflow: hidden;
+}
+
 .loadingArea {
   display: flex;
   align-items: center;
