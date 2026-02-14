@@ -3,6 +3,15 @@ import { render, screen, fireEvent, waitFor, within } from '@testing-library/rea
 import { ChatElementSettings } from '../ChatElementSettings';
 import { Element } from '@/types/element';
 
+vi.mock('@/hooks/useChatPreview', () => ({
+  useChatPreview: () => [
+    { key: 1, user: 'TestViewer', color: '#e6a817', text: 'hello world' },
+    { key: 2, user: 'TestMod', color: '#b565e0', text: 'welcome', badges: ['mod', 'sub'], emotes: ['KEKW'] },
+    { key: 3, user: 'TestSub', color: '#00ad03', text: 'lets go', badges: ['sub'] },
+    { key: 4, user: 'TestBot', color: '#aaaaaa', text: 'bot response', isBot: true },
+  ],
+}));
+
 const mockElement: Element = {
   id: 1,
   name: 'Chat',
@@ -91,10 +100,9 @@ describe('ChatElementSettings', () => {
     it('should render preview messages', () => {
       renderSettings();
 
-      expect(screen.getByText(/GoldenViewer/)).toBeInTheDocument();
-      expect(screen.getByText(/YourModerator/)).toBeInTheDocument();
-      expect(screen.getByText(/LaughingAndy/)).toBeInTheDocument();
-      expect(screen.getByText(/CatVibes420/)).toBeInTheDocument();
+      expect(screen.getByText(/TestViewer/)).toBeInTheDocument();
+      expect(screen.getByText(/TestMod/)).toBeInTheDocument();
+      expect(screen.getByText(/TestSub/)).toBeInTheDocument();
     });
 
     it('should render badge images', () => {

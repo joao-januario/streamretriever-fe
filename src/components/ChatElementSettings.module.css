@@ -11,13 +11,6 @@
   box-sizing: border-box;
 }
 
-.pageTitle {
-  font-size: 1.5rem;
-  line-height: 2rem;
-  font-weight: 700;
-  margin: 0;
-}
-
 .headerActions {
   display: flex;
   align-items: center;
@@ -318,24 +311,25 @@
 
 /* ── Fade time input ── */
 
-.fadeTimeRow {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding-left: calc(36px + 0.625rem);
-}
-
 .fadeTimeInput {
+  appearance: textfield;
+  -moz-appearance: textfield;
   background: var(--card-bg);
   border: 1px solid var(--card-inner-border);
-  border-radius: 0.5rem;
-  padding: 0.375rem 0.625rem;
+  border-radius: 0.375rem;
+  padding: 0.15rem 0.5rem;
   color: var(--foreground);
   font-size: 0.813rem;
-  width: 4.5rem;
+  width: 3.5rem;
   outline: none;
   box-sizing: border-box;
   transition: border-color var(--duration-fast) var(--ease-smooth);
+}
+
+.fadeTimeInput::-webkit-inner-spin-button,
+.fadeTimeInput::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 .fadeTimeInput:focus {
@@ -414,6 +408,18 @@
   flex-direction: column;
 }
 
+.previewBox {
+  position: relative;
+  flex: 1;
+  border-radius: 0.75rem;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
 .previewControls {
   position: absolute;
   top: 0.75rem;
@@ -458,60 +464,62 @@
   color: var(--foreground);
 }
 
-.previewBox {
-  position: relative;
-  flex: 1;
-  border-radius: 0.75rem;
-  padding: 2rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  overflow: hidden;
-  box-sizing: border-box;
-}
-
 .previewContent {
   max-width: 485px;
   width: 100%;
   flex: 1;
+  position: relative;
+  border-radius: 0.375rem;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.messagesInner {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
   padding: 0.25rem;
-  border-radius: 0.375rem;
-  box-sizing: border-box;
 }
 
 /* ── Chat message line ── */
 
 .chatLine {
-  display: flex;
-  align-items: center;
-  gap: 0.35rem;
-  flex-wrap: wrap;
+  line-height: 1.4;
+  word-wrap: break-word;
+}
+
+.chatLine > * {
+  vertical-align: middle;
 }
 
 .badgeGroup {
-  display: inline-flex;
-  gap: 0.2rem;
-  align-items: center;
-  flex-shrink: 0;
+  display: inline;
 }
 
 .badge {
+  display: inline;
   width: 18px;
   height: 18px;
-  flex-shrink: 0;
+  vertical-align: middle;
+  margin-right: 0.25rem;
 }
 
 .previewUsername {
   font-weight: 700;
+  vertical-align: middle;
 }
 
 .emote {
-  height: 1.8em;
+  height: 1.75em;
+  width: auto;
+  max-width: 3.5em;
   vertical-align: middle;
-  flex-shrink: 0;
+  display: inline;
+  margin: 0 0.1em;
 }
 
 /* ── Responsive ── */

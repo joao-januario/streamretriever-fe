@@ -5,6 +5,8 @@ import { Element, UpdateChatElementRequest } from '@/types/element';
 import { Button } from '@/components/ui/Button';
 import { SegmentedControl } from '@/components/ui/SegmentedControl';
 import { logService } from '@/services/logService';
+import { useChatPreview } from '@/hooks/useChatPreview';
+import { EMOTE_MAP, BADGE_MAP } from '@/data/chatPreviewMessages';
 import styles from './ChatElementSettings.module.css';
 
 interface ChatElementSettingsProps {
@@ -42,6 +44,8 @@ const BG_COLORS = [
   { value: 'rgba(234, 210, 30, 0.2)', label: 'Yellow' },
 ];
 
+const DEFAULT_PREVIEW_BG = '#1e1840';
+
 /* ── Reverse lookups ── */
 
 function sizeToPreset(fontSize: number): string {
@@ -78,12 +82,12 @@ export function ChatElementSettings({ element, onSave, onDelete }: ChatElementSe
   const [bold, setBold] = useState(false);
   const [stroke, setStroke] = useState('Off');
   const [shadow, setShadow] = useState('Off');
-  const [previewBg, setPreviewBg] = useState('#1e1840');
+  const [previewBg, setPreviewBg] = useState(DEFAULT_PREVIEW_BG);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
 
-  // New settings (non-functional placeholders)
+  // Placeholder settings — hideCommands, fadeEnabled/fadeTime not yet wired to backend
   const [caps, setCaps] = useState(false);
   const [hideCommands, setHideCommands] = useState(false);
   const [hideBadges, setHideBadges] = useState(false);
@@ -91,6 +95,8 @@ export function ChatElementSettings({ element, onSave, onDelete }: ChatElementSe
   const [fadeEnabled, setFadeEnabled] = useState(false);
   const [fadeTime, setFadeTime] = useState('30');
   const [chatBg, setChatBg] = useState('transparent');
+
+  const previewMessages = useChatPreview();
 
   useEffect(() => {
     if (element?.elementChat) {
@@ -218,240 +224,228 @@ export function ChatElementSettings({ element, onSave, onDelete }: ChatElementSe
 
       {/* ── Content area ── */}
       <div className={styles.content}>
-      <div className={styles.layout}>
-      {/* ── Settings area ── */}
-      <div className={styles.settingsArea}>
-        {/* Typography */}
-        <div className={styles.sectionCard}>
-          <h3 className={styles.sectionTitle}>Typography</h3>
-          <div className={styles.fieldGroup}>
-            <div className={styles.fieldRow}>
-              <label className={styles.field}>
-                <span className={styles.label}>Font</span>
-                <select
-                  className={styles.select}
-                  value={fontFamily}
-                  onChange={(e) => setFontFamily(e.target.value)}
-                >
-                  <option value="Open Sans">Open Sans</option>
-                  <option value="Roboto">Roboto</option>
-                </select>
-              </label>
-              <label className={styles.field}>
-                <span className={styles.label}>Font Color</span>
-                <div className={styles.colorRow}>
+        <div className={styles.layout}>
+          {/* ── Settings area ── */}
+          <div className={styles.settingsArea}>
+            {/* Typography */}
+            <div className={styles.sectionCard}>
+              <h3 className={styles.sectionTitle}>Typography</h3>
+              <div className={styles.fieldGroup}>
+                <div className={styles.fieldRow}>
+                  <label className={styles.field}>
+                    <span className={styles.label}>Font</span>
+                    <select
+                      className={styles.select}
+                      value={fontFamily}
+                      onChange={(e) => setFontFamily(e.target.value)}
+                    >
+                      <option value="Open Sans">Open Sans</option>
+                      <option value="Roboto">Roboto</option>
+                    </select>
+                  </label>
+                  <label className={styles.field}>
+                    <span className={styles.label}>Font Color</span>
+                    <div className={styles.colorRow}>
+                      <input
+                        type="color"
+                        className={styles.colorSwatch}
+                        value={fontColor}
+                        onChange={(e) => setFontColor(e.target.value)}
+                      />
+                      <input
+                        type="text"
+                        className={styles.colorHex}
+                        value={fontColor}
+                        onChange={(e) => setFontColor(e.target.value)}
+                      />
+                    </div>
+                  </label>
+                </div>
+                <SegmentedControl
+                  label="Size"
+                  options={Object.keys(SIZE_MAP)}
+                  value={size}
+                  onChange={setSize}
+                />
+                <div className={styles.toggleRow}>
+                  <label className={styles.toggle}>
+                    <input
+                      type="checkbox"
+                      checked={bold}
+                      onChange={(e) => setBold(e.target.checked)}
+                    />
+                    <span>Bold</span>
+                  </label>
+                  <label className={styles.toggle}>
+                    <input
+                      type="checkbox"
+                      checked={caps}
+                      onChange={(e) => setCaps(e.target.checked)}
+                    />
+                    <span>All Caps</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            {/* Effects */}
+            <div className={styles.sectionCard}>
+              <h3 className={styles.sectionTitle}>Effects</h3>
+              <div className={styles.fieldGroup}>
+                <SegmentedControl
+                  label="Stroke"
+                  options={Object.keys(STROKE_MAP)}
+                  value={stroke}
+                  onChange={setStroke}
+                />
+                <SegmentedControl
+                  label="Shadow"
+                  options={Object.keys(SHADOW_MAP)}
+                  value={shadow}
+                  onChange={setShadow}
+                />
+              </div>
+              <div className={styles.fieldGroup}>
+                <div className={styles.field}>
+                  <span className={styles.label}>Chat Background</span>
+                  <div className={styles.swatchGrid}>
+                    {BG_COLORS.map(({ value, label }) => (
+                      <button
+                        key={value}
+                        type="button"
+                        className={`${styles.bgSwatch} ${value === 'transparent' ? styles.bgSwatchTransparent : ''} ${chatBg === value ? styles.bgSwatchActive : ''}`}
+                        style={value !== 'transparent' ? { backgroundColor: value } : undefined}
+                        onClick={() => setChatBg(value)}
+                        title={label}
+                        aria-label={label}
+                      />
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Behavior */}
+            <div className={styles.sectionCard}>
+              <h3 className={styles.sectionTitle}>Behavior</h3>
+              <div className={styles.fieldGroup}>
+                <div className={styles.toggleGrid}>
+                  <label className={styles.toggle}>
+                    <input
+                      type="checkbox"
+                      checked={hideCommands}
+                      onChange={(e) => setHideCommands(e.target.checked)}
+                    />
+                    <span>Hide Commands</span>
+                  </label>
+                  <label className={styles.toggle}>
+                    <input
+                      type="checkbox"
+                      checked={hideBadges}
+                      onChange={(e) => setHideBadges(e.target.checked)}
+                    />
+                    <span>Hide Badges</span>
+                  </label>
+                  <label className={styles.toggle}>
+                    <input
+                      type="checkbox"
+                      checked={hideBots}
+                      onChange={(e) => setHideBots(e.target.checked)}
+                    />
+                    <span>Hide Bots</span>
+                  </label>
+                  <label className={styles.toggle}>
+                    <input
+                      type="checkbox"
+                      checked={fadeEnabled}
+                      onChange={(e) => setFadeEnabled(e.target.checked)}
+                    />
+                    <span>Fade Messages</span>
+                    {fadeEnabled && (
+                      <>
+                        <input
+                          type="number"
+                          className={styles.fadeTimeInput}
+                          value={fadeTime}
+                          onChange={(e) => setFadeTime(e.target.value)}
+                          min="30"
+                          max="600"
+                        />
+                        <span className={styles.fadeTimeLabel}>seconds</span>
+                      </>
+                    )}
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* ── Preview column ── */}
+          <div className={styles.previewColumn}>
+            <div className={styles.previewArea}>
+              <div className={styles.previewBox} style={{ backgroundColor: previewBg }}>
+                <div className={styles.previewControls}>
                   <input
                     type="color"
-                    className={styles.colorSwatch}
-                    value={fontColor}
-                    onChange={(e) => setFontColor(e.target.value)}
+                    className={styles.previewBgPicker}
+                    value={previewBg}
+                    onChange={(e) => setPreviewBg(e.target.value)}
+                    title="Preview background color"
                   />
-                  <input
-                    type="text"
-                    className={styles.colorHex}
-                    value={fontColor}
-                    onChange={(e) => setFontColor(e.target.value)}
-                  />
-                </div>
-              </label>
-            </div>
-            <SegmentedControl
-              label="Size"
-              options={Object.keys(SIZE_MAP)}
-              value={size}
-              onChange={setSize}
-            />
-            <div className={styles.toggleRow}>
-              <label className={styles.toggle}>
-                <input
-                  type="checkbox"
-                  checked={bold}
-                  onChange={(e) => setBold(e.target.checked)}
-                />
-                <span>Bold</span>
-              </label>
-              <label className={styles.toggle}>
-                <input
-                  type="checkbox"
-                  checked={caps}
-                  onChange={(e) => setCaps(e.target.checked)}
-                />
-                <span>All Caps</span>
-              </label>
-            </div>
-          </div>
-        </div>
-
-        {/* Effects */}
-        <div className={styles.sectionCard}>
-          <h3 className={styles.sectionTitle}>Effects</h3>
-          <div className={styles.fieldGroup}>
-            <SegmentedControl
-              label="Stroke"
-              options={Object.keys(STROKE_MAP)}
-              value={stroke}
-              onChange={setStroke}
-            />
-            <SegmentedControl
-              label="Shadow"
-              options={Object.keys(SHADOW_MAP)}
-              value={shadow}
-              onChange={setShadow}
-            />
-          </div>
-          <div className={styles.fieldGroup}>
-            <div className={styles.field}>
-              <span className={styles.label}>Chat Background</span>
-              <div className={styles.swatchGrid}>
-                {BG_COLORS.map(({ value, label }) => (
                   <button
-                    key={value}
                     type="button"
-                    className={`${styles.bgSwatch} ${value === 'transparent' ? styles.bgSwatchTransparent : ''} ${chatBg === value ? styles.bgSwatchActive : ''}`}
-                    style={value !== 'transparent' ? { backgroundColor: value } : undefined}
-                    onClick={() => setChatBg(value)}
-                    title={label}
-                    aria-label={label}
-                  />
-                ))}
+                    className={styles.previewBgReset}
+                    onClick={() => setPreviewBg(DEFAULT_PREVIEW_BG)}
+                    title="Reset to card background"
+                  >
+                    ↺
+                  </button>
+                </div>
+                <div
+                  className={styles.previewContent}
+                  style={{ backgroundColor: chatBg }}
+                >
+                  <div className={styles.messagesInner}>
+                    {previewMessages
+                      .filter(msg => !hideBots || !msg.isBot)
+                      .map(msg => (
+                        <div key={msg.key} className={styles.chatLine} style={textStyle}>
+                          {!hideBadges && msg.badges && msg.badges.length > 0 && (
+                            <span className={styles.badgeGroup}>
+                              {msg.badges.map((badge, i) => (
+                                <img
+                                  key={i}
+                                  className={styles.badge}
+                                  src={BADGE_MAP[badge]}
+                                  alt={badge === 'mod' ? 'Moderator' : 'Subscriber'}
+                                  draggable={false}
+                                />
+                              ))}
+                            </span>
+                          )}
+                          <span className={styles.previewUsername} style={{ color: msg.color }}>
+                            {msg.user}
+                          </span>
+                          <span style={{ color: fontColor }}>
+                            {`: ${msg.text}${msg.emotes && msg.emotes.length > 0 ? ' ' : ''}`}
+                          </span>
+                          {msg.emotes?.map((emote, i) => (
+                            <img
+                              key={i}
+                              className={styles.emote}
+                              src={EMOTE_MAP[emote]}
+                              alt={emote}
+                              draggable={false}
+                            />
+                          ))}
+                        </div>
+                      ))}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
-
-        {/* Behavior */}
-        <div className={styles.sectionCard}>
-          <h3 className={styles.sectionTitle}>Behavior</h3>
-          <div className={styles.fieldGroup}>
-            <div className={styles.toggleGrid}>
-              <label className={styles.toggle}>
-                <input
-                  type="checkbox"
-                  checked={hideCommands}
-                  onChange={(e) => setHideCommands(e.target.checked)}
-                />
-                <span>Hide Commands</span>
-              </label>
-              <label className={styles.toggle}>
-                <input
-                  type="checkbox"
-                  checked={hideBadges}
-                  onChange={(e) => setHideBadges(e.target.checked)}
-                />
-                <span>Hide Badges</span>
-              </label>
-              <label className={styles.toggle}>
-                <input
-                  type="checkbox"
-                  checked={hideBots}
-                  onChange={(e) => setHideBots(e.target.checked)}
-                />
-                <span>Hide Bots</span>
-              </label>
-              <label className={styles.toggle}>
-                <input
-                  type="checkbox"
-                  checked={fadeEnabled}
-                  onChange={(e) => setFadeEnabled(e.target.checked)}
-                />
-                <span>Fade Messages</span>
-              </label>
-            </div>
-            {fadeEnabled && (
-              <div className={styles.fadeTimeRow}>
-                <input
-                  type="number"
-                  className={styles.fadeTimeInput}
-                  value={fadeTime}
-                  onChange={(e) => setFadeTime(e.target.value)}
-                  min="1"
-                  max="300"
-                />
-                <span className={styles.fadeTimeLabel}>seconds</span>
-              </div>
-            )}
-          </div>
-        </div>
-
-      </div>
-
-      {/* ── Preview column ── */}
-      <div className={styles.previewColumn}>
-        <div className={styles.previewArea}>
-          <div className={styles.previewBox} style={{ backgroundColor: previewBg }}>
-            <div className={styles.previewControls}>
-              <input
-                type="color"
-                className={styles.previewBgPicker}
-                value={previewBg}
-                onChange={(e) => setPreviewBg(e.target.value)}
-                title="Preview background color"
-              />
-              <button
-                type="button"
-                className={styles.previewBgReset}
-                onClick={() => setPreviewBg('#1e1840')}
-                title="Reset to card background"
-              >
-                ↺
-              </button>
-            </div>
-            <div
-              className={styles.previewContent}
-              style={{ backgroundColor: chatBg }}
-            >
-              {/* Message 1: text only */}
-              <div className={styles.chatLine}>
-                <span style={textStyle}>
-                  <span className={styles.previewUsername} style={{ color: '#e6a817' }}>GoldenViewer</span>
-                  <span style={{ color: fontColor }}>{': gg wp that was insane'}</span>
-                </span>
-              </div>
-
-              {/* Message 2: badges + KEKW */}
-              <div className={styles.chatLine}>
-                {!hideBadges && (
-                  <span className={styles.badgeGroup}>
-                    <img className={styles.badge} src="/emotes/badge-subscriber.png" alt="Subscriber" draggable={false} />
-                    <img className={styles.badge} src="/emotes/badge-moderator.png" alt="Moderator" draggable={false} />
-                  </span>
-                )}
-                <span style={textStyle}>
-                  <span className={styles.previewUsername} style={{ color: '#b565e0' }}>YourModerator</span>
-                  <span style={{ color: fontColor }}>{': Nice stream! '}</span>
-                </span>
-                <img className={styles.emote} src="/emotes/kekw.png" alt="KEKW" draggable={false} />
-              </div>
-
-              {/* Message 3: PepeLaugh */}
-              <div className={styles.chatLine}>
-                {!hideBadges && (
-                  <span className={styles.badgeGroup}>
-                    <img className={styles.badge} src="/emotes/badge-subscriber.png" alt="Subscriber" draggable={false} />
-                  </span>
-                )}
-                <span style={textStyle}>
-                  <span className={styles.previewUsername} style={{ color: '#00ad03' }}>LaughingAndy</span>
-                  <span style={{ color: fontColor }}>{': no way '}</span>
-                </span>
-                <img className={styles.emote} src="/emotes/pepelaugh.gif" alt="PepeLaugh" draggable={false} />
-              </div>
-
-              {/* Message 4: emote spam */}
-              <div className={styles.chatLine}>
-                <span style={textStyle}>
-                  <span className={styles.previewUsername} style={{ color: '#1e90ff' }}>CatVibes420</span>
-                  <span style={{ color: fontColor }}>{': '}</span>
-                </span>
-                {Array.from({ length: 20 }, (_, i) => (
-                  <img key={i} className={styles.emote} src="/emotes/catjam.gif" alt="catJAM" draggable={false} />
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      </div>
       </div>
     </>
   );
