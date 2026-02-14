@@ -66,7 +66,7 @@ export default function DashboardSidebar() {
       <NavGroup
         icon={<LayersIcon />}
         label="Sources"
-        defaultOpen={false}
+        defaultOpen={pathname.startsWith('/sources')}
       >
         <NavItem
           icon={<ChatBubbleIcon />}

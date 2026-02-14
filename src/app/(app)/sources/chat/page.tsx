@@ -30,9 +30,6 @@ export default function ChatPage() {
     return (
       <div className={styles.wrapper}>
         <Card className={styles.outerCard}>
-          <Card variant="header" className={styles.headerCard}>
-            <h1 className={styles.title}>Chat</h1>
-          </Card>
           <div className={chatStyles.loadingArea}>
             <Spinner />
           </div>

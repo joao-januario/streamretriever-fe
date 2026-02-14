@@ -9,18 +9,6 @@
   overflow: hidden;
   background: linear-gradient(180deg, var(--sidebar-bg-from) 0%, var(--sidebar-bg-via) 40%, var(--sidebar-bg-to) 100%);
   border-right: 1px solid var(--sidebar-border);
-  animation: sidebar-fade-in var(--duration-slow) var(--ease-smooth) both;
-}
-
-@keyframes sidebar-fade-in {
-  from {
-    opacity: 0;
-    transform: translateX(-8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
 }
 
 /* Noise texture overlay for atmosphere */

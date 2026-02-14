@@ -26,9 +26,9 @@ const STROKE_MAP: Record<string, { enabled: boolean; size: number }> = {
 
 const SHADOW_MAP: Record<string, { enabled: boolean; size: number }> = {
   Off:    { enabled: false, size: 0 },
-  Small:  { enabled: true,  size: 2 },
-  Medium: { enabled: true,  size: 4 },
-  Large:  { enabled: true,  size: 6 },
+  Small:  { enabled: true,  size: 1 },
+  Medium: { enabled: true,  size: 2 },
+  Large:  { enabled: true,  size: 4 },
 };
 
 const BG_COLORS = [
@@ -63,8 +63,8 @@ function strokeToPreset(enabled: boolean, size: number): string {
 function shadowToPreset(enabled: boolean, size: number | null): string {
   if (!enabled) return 'Off';
   const s = size ?? 0;
-  if (s <= 2) return 'Small';
-  if (s <= 4) return 'Medium';
+  if (s <= 1.5) return 'Small';
+  if (s <= 3) return 'Medium';
   return 'Large';
 }
 
@@ -176,11 +176,20 @@ export function ChatElementSettings({ element, onSave, onDelete }: ChatElementSe
 
   return (
     <>
-      {/* ── Page header: title left, actions right ── */}
+      {/* ── Page header: CTA left, delete right ── */}
       <div className={styles.pageHeader}>
-        <h1 className={styles.pageTitle}>Chat</h1>
         <div className={styles.headerActions}>
+          <Button
+            size="lg"
+            className={styles.actionButton}
+            onClick={handleSave}
+            disabled={isSaving}
+          >
+            {isSaving ? 'Saving\u2026' : element ? 'Update Settings' : 'Create Element'}
+          </Button>
           {saveError && <p className={styles.errorMessage}>{saveError}</p>}
+        </div>
+        <div>
           {element && !showDeleteConfirm && (
             <Button variant="danger" size="sm" onClick={() => setShowDeleteConfirm(true)}>
               Delete
@@ -197,14 +206,6 @@ export function ChatElementSettings({ element, onSave, onDelete }: ChatElementSe
               </Button>
             </div>
           )}
-          <Button
-            size="lg"
-            className={styles.actionButton}
-            onClick={handleSave}
-            disabled={isSaving}
-          >
-            {isSaving ? 'Saving\u2026' : element ? 'Update Settings' : 'Create Element'}
-          </Button>
         </div>
       </div>
 
@@ -217,58 +218,60 @@ export function ChatElementSettings({ element, onSave, onDelete }: ChatElementSe
         <div className={styles.sectionCard}>
           <h3 className={styles.sectionTitle}>Typography</h3>
           <div className={styles.fieldGroup}>
-            <label className={styles.field}>
-              <span className={styles.label}>Font</span>
-              <select
-                className={styles.select}
-                value={fontFamily}
-                onChange={(e) => setFontFamily(e.target.value)}
-              >
-                <option value="Open Sans">Open Sans</option>
-                <option value="Roboto">Roboto</option>
-              </select>
-            </label>
+            <div className={styles.fieldRow}>
+              <label className={styles.field}>
+                <span className={styles.label}>Font</span>
+                <select
+                  className={styles.select}
+                  value={fontFamily}
+                  onChange={(e) => setFontFamily(e.target.value)}
+                >
+                  <option value="Open Sans">Open Sans</option>
+                  <option value="Roboto">Roboto</option>
+                </select>
+              </label>
+              <label className={styles.field}>
+                <span className={styles.label}>Font Color</span>
+                <div className={styles.colorRow}>
+                  <input
+                    type="color"
+                    className={styles.colorSwatch}
+                    value={fontColor}
+                    onChange={(e) => setFontColor(e.target.value)}
+                  />
+                  <input
+                    type="text"
+                    className={styles.colorHex}
+                    value={fontColor}
+                    onChange={(e) => setFontColor(e.target.value)}
+                  />
+                </div>
+              </label>
+            </div>
             <SegmentedControl
               label="Size"
               options={Object.keys(SIZE_MAP)}
               value={size}
               onChange={setSize}
             />
-            <label className={styles.field}>
-              <span className={styles.label}>Font Color</span>
-              <div className={styles.colorRow}>
+            <div className={styles.toggleRow}>
+              <label className={styles.toggle}>
                 <input
-                  type="color"
-                  className={styles.colorSwatch}
-                  value={fontColor}
-                  onChange={(e) => setFontColor(e.target.value)}
+                  type="checkbox"
+                  checked={bold}
+                  onChange={(e) => setBold(e.target.checked)}
                 />
+                <span>Bold</span>
+              </label>
+              <label className={styles.toggle}>
                 <input
-                  type="text"
-                  className={styles.colorHex}
-                  value={fontColor}
-                  onChange={(e) => setFontColor(e.target.value)}
+                  type="checkbox"
+                  checked={caps}
+                  onChange={(e) => setCaps(e.target.checked)}
                 />
-              </div>
-            </label>
-          </div>
-          <div className={styles.fieldGroup}>
-            <label className={styles.toggle}>
-              <input
-                type="checkbox"
-                checked={bold}
-                onChange={(e) => setBold(e.target.checked)}
-              />
-              <span>Bold</span>
-            </label>
-            <label className={styles.toggle}>
-              <input
-                type="checkbox"
-                checked={caps}
-                onChange={(e) => setCaps(e.target.checked)}
-              />
-              <span>All Caps</span>
-            </label>
+                <span>All Caps</span>
+              </label>
+            </div>
           </div>
         </div>
 
@@ -313,38 +316,40 @@ export function ChatElementSettings({ element, onSave, onDelete }: ChatElementSe
         <div className={styles.sectionCard}>
           <h3 className={styles.sectionTitle}>Behavior</h3>
           <div className={styles.fieldGroup}>
-            <label className={styles.toggle}>
-              <input
-                type="checkbox"
-                checked={hideCommands}
-                onChange={(e) => setHideCommands(e.target.checked)}
-              />
-              <span>Hide Commands</span>
-            </label>
-            <label className={styles.toggle}>
-              <input
-                type="checkbox"
-                checked={hideBadges}
-                onChange={(e) => setHideBadges(e.target.checked)}
-              />
-              <span>Hide Badges</span>
-            </label>
-            <label className={styles.toggle}>
-              <input
-                type="checkbox"
-                checked={hideBots}
-                onChange={(e) => setHideBots(e.target.checked)}
-              />
-              <span>Hide Bots</span>
-            </label>
-            <label className={styles.toggle}>
-              <input
-                type="checkbox"
-                checked={fadeEnabled}
-                onChange={(e) => setFadeEnabled(e.target.checked)}
-              />
-              <span>Fade Messages</span>
-            </label>
+            <div className={styles.toggleGrid}>
+              <label className={styles.toggle}>
+                <input
+                  type="checkbox"
+                  checked={hideCommands}
+                  onChange={(e) => setHideCommands(e.target.checked)}
+                />
+                <span>Hide Commands</span>
+              </label>
+              <label className={styles.toggle}>
+                <input
+                  type="checkbox"
+                  checked={hideBadges}
+                  onChange={(e) => setHideBadges(e.target.checked)}
+                />
+                <span>Hide Badges</span>
+              </label>
+              <label className={styles.toggle}>
+                <input
+                  type="checkbox"
+                  checked={hideBots}
+                  onChange={(e) => setHideBots(e.target.checked)}
+                />
+                <span>Hide Bots</span>
+              </label>
+              <label className={styles.toggle}>
+                <input
+                  type="checkbox"
+                  checked={fadeEnabled}
+                  onChange={(e) => setFadeEnabled(e.target.checked)}
+                />
+                <span>Fade Messages</span>
+              </label>
+            </div>
             {fadeEnabled && (
               <div className={styles.fadeTimeRow}>
                 <input
@@ -366,8 +371,7 @@ export function ChatElementSettings({ element, onSave, onDelete }: ChatElementSe
       {/* ── Preview column ── */}
       <div className={styles.previewColumn}>
         <div className={styles.previewArea}>
-          <div className={styles.previewHeader}>
-            <span>Preview</span>
+          <div className={styles.previewBox} style={{ backgroundColor: previewBg }}>
             <div className={styles.previewControls}>
               <input
                 type="color"
@@ -385,8 +389,6 @@ export function ChatElementSettings({ element, onSave, onDelete }: ChatElementSe
                 ↺
               </button>
             </div>
-          </div>
-          <div className={styles.previewBox} style={{ backgroundColor: previewBg }}>
             <div className={styles.previewContent}>
               {/* Message 1: text only */}
               <div className={styles.chatLine}>
