@@ -18,19 +18,25 @@ const mockElement: Element = {
   elementType: 'CHAT',
   elementChat: {
     id: 1,
+    fontSizePreset: 'LARGE',
+    fontSizeCustom: null,
+    strokePreset: 'THIN',
+    strokeCustom: null,
+    shadowPreset: 'LARGE',
+    shadowCustom: null,
+    backgroundPreset: 'NONE',
+    backgroundCustom: null,
     fontFamily: 'Open Sans',
-    fontSize: 24,
-    fontWeight: 'bold',
     fontColor: '#ff0000',
-    strokeEnabled: true,
+    fontWeight: 'bold',
     strokeColor: '#000000',
-    strokeSize: 1,
-    shadowEnabled: true,
     shadowColor: '#000000',
-    shadowSize: 4,
-    backgroundColor: null,
-    backgroundOpacity: null,
-    extraSettings: null,
+    allCaps: false,
+    hideCommands: false,
+    hideBadges: false,
+    hideBots: false,
+    fadeEnabled: false,
+    fadeTime: 30,
     createdAt: '2024-01-01T00:00:00',
     updatedAt: '2024-01-01T00:00:00',
   },
@@ -157,11 +163,11 @@ describe('ChatElementSettings', () => {
         expect(onSave).toHaveBeenCalledWith(
           expect.objectContaining({
             fontFamily: 'Roboto',
-            fontSize: 18,
+            fontSizePreset: 'MEDIUM',
             fontWeight: 'normal',
             fontColor: '#ffffff',
-            strokeEnabled: false,
-            shadowEnabled: false,
+            strokePreset: 'OFF',
+            shadowPreset: 'OFF',
           })
         );
       });
@@ -181,8 +187,8 @@ describe('ChatElementSettings', () => {
       await waitFor(() => {
         expect(onSave).toHaveBeenCalledWith(
           expect.objectContaining({
-            fontSize: 24,
-            strokeEnabled: true,
+            fontSizePreset: 'LARGE',
+            strokePreset: 'THIN',
           })
         );
       });

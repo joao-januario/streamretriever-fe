@@ -9,19 +9,32 @@ export interface Element {
 
 export interface ElementChat {
   id: number;
+
+  // Preset/custom pairs
+  fontSizePreset: string | null;
+  fontSizeCustom: number | null;
+  strokePreset: string | null;
+  strokeCustom: number | null;
+  shadowPreset: string | null;
+  shadowCustom: number | null;
+  backgroundPreset: string | null;
+  backgroundCustom: string | null;
+
+  // Simple fields
   fontFamily: string;
-  fontSize: number;
-  fontWeight: string;
   fontColor: string;
-  strokeEnabled: boolean;
+  fontWeight: string;
   strokeColor: string;
-  strokeSize: number;
-  shadowEnabled: boolean;
   shadowColor: string | null;
-  shadowSize: number | null;
-  backgroundColor: string | null;
-  backgroundOpacity: number | null;
-  extraSettings: Record<string, unknown> | null;
+
+  // Behavior
+  allCaps: boolean;
+  hideCommands: boolean;
+  hideBadges: boolean;
+  hideBots: boolean;
+  fadeEnabled: boolean;
+  fadeTime: number;
+
   createdAt: string;
   updatedAt: string;
 }
@@ -32,17 +45,23 @@ export interface CreateChatElementRequest {
 }
 
 export interface UpdateChatElementRequest {
+  fontSizePreset?: string;
+  fontSizeCustom?: number;
+  strokePreset?: string;
+  strokeCustom?: number;
+  shadowPreset?: string;
+  shadowCustom?: number;
+  backgroundPreset?: string;
+  backgroundCustom?: string;
   fontFamily?: string;
-  fontSize?: number;
-  fontWeight?: string;
   fontColor?: string;
-  strokeEnabled?: boolean;
+  fontWeight?: string;
   strokeColor?: string;
-  strokeSize?: number;
-  shadowEnabled?: boolean;
   shadowColor?: string;
-  shadowSize?: number;
-  backgroundColor?: string;
-  backgroundOpacity?: number;
-  extraSettings?: Record<string, unknown>;
+  allCaps?: boolean;
+  hideCommands?: boolean;
+  hideBadges?: boolean;
+  hideBots?: boolean;
+  fadeEnabled?: boolean;
+  fadeTime?: number;
 }

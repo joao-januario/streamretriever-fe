@@ -38,7 +38,7 @@ export function ChatElementList({ elements, selectedId, onSelect, onCreate }: Ch
                 className={styles.preview}
                 style={{
                   fontFamily: element.elementChat?.fontFamily ?? 'Open Sans',
-                  fontSize: `${Math.min(element.elementChat?.fontSize ?? 16, 20)}px`,
+                  fontSize: `${Math.min(({ 'SMALL': 14, 'MEDIUM': 18, 'LARGE': 24 }[element.elementChat?.fontSizePreset ?? 'MEDIUM'] ?? 18), 20)}px`,
                   fontWeight: element.elementChat?.fontWeight ?? 'normal',
                   color: element.elementChat?.fontColor ?? '#ffffff',
                 }}

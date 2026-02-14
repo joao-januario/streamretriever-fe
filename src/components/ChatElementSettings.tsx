@@ -46,31 +46,29 @@ const BG_COLORS = [
 
 const DEFAULT_PREVIEW_BG = '#1e1840';
 
-/* ── Reverse lookups ── */
+/* ── Background preset mappings ── */
 
-function sizeToPreset(fontSize: number): string {
-  let closest = 'Medium';
-  let minDiff = Infinity;
-  for (const [name, px] of Object.entries(SIZE_MAP)) {
-    const diff = Math.abs(px - fontSize);
-    if (diff < minDiff) { minDiff = diff; closest = name; }
-  }
-  return closest;
-}
+const BG_PRESET_MAP: Record<string, string> = {
+  'None': 'NONE', 'Black': 'BLACK', 'Red': 'RED', 'Blue': 'BLUE',
+  'Green': 'GREEN', 'Purple': 'PURPLE', 'Pink': 'PINK', 'Yellow': 'YELLOW',
+};
 
-function strokeToPreset(enabled: boolean, size: number): string {
-  if (!enabled) return 'Off';
-  if (size <= 1) return 'Thin';
-  if (size <= 2) return 'Medium';
-  return 'Thick';
-}
+const PRESET_TO_BG: Record<string, string> = {
+  'NONE': 'transparent',
+  'BLACK': 'rgba(0, 0, 0, 0.5)',
+  'RED': 'rgba(220, 38, 38, 0.2)',
+  'BLUE': 'rgba(37, 99, 235, 0.2)',
+  'GREEN': 'rgba(22, 163, 74, 0.2)',
+  'PURPLE': 'rgba(147, 51, 234, 0.2)',
+  'PINK': 'rgba(255, 0, 128, 0.2)',
+  'YELLOW': 'rgba(234, 210, 30, 0.2)',
+};
 
-function shadowToPreset(enabled: boolean, size: number | null): string {
-  if (!enabled) return 'Off';
-  const s = size ?? 0;
-  if (s <= 1.5) return 'Small';
-  if (s <= 3) return 'Medium';
-  return 'Large';
+/* ── Preset display helper ── */
+
+function presetToDisplayName(preset: string | null, fallback: string): string {
+  if (!preset) return fallback;
+  return preset.charAt(0).toUpperCase() + preset.slice(1).toLowerCase();
 }
 
 /* ── Component ── */
@@ -101,13 +99,19 @@ export function ChatElementSettings({ element, onSave, onDelete }: ChatElementSe
   useEffect(() => {
     if (element?.elementChat) {
       const chat = element.elementChat;
-      setSize(sizeToPreset(chat.fontSize));
+      setSize(presetToDisplayName(chat.fontSizePreset, 'Medium'));
       setFontFamily(chat.fontFamily);
       setFontColor(chat.fontColor);
       setBold(chat.fontWeight === 'bold');
-      setStroke(strokeToPreset(chat.strokeEnabled, chat.strokeSize));
-      setShadow(shadowToPreset(chat.shadowEnabled, chat.shadowSize));
-      setChatBg(chat.backgroundColor ?? 'transparent');
+      setStroke(presetToDisplayName(chat.strokePreset, 'Off'));
+      setShadow(presetToDisplayName(chat.shadowPreset, 'Off'));
+      setChatBg(chat.backgroundPreset ? (PRESET_TO_BG[chat.backgroundPreset] ?? 'transparent') : 'transparent');
+      setCaps(chat.allCaps);
+      setHideCommands(chat.hideCommands);
+      setHideBadges(chat.hideBadges);
+      setHideBots(chat.hideBots);
+      setFadeEnabled(chat.fadeEnabled);
+      setFadeTime(String(chat.fadeTime));
     } else {
       setSize('Medium');
       setFontFamily('Roboto');
@@ -124,23 +128,25 @@ export function ChatElementSettings({ element, onSave, onDelete }: ChatElementSe
     setIsSaving(true);
     setSaveError(null);
     try {
-      const strokeVal = STROKE_MAP[stroke];
-      const shadowVal = SHADOW_MAP[shadow];
+      const bgEntry = BG_COLORS.find(bg => bg.value === chatBg);
+      const bgPresetName = bgEntry ? BG_PRESET_MAP[bgEntry.label] : 'NONE';
+
       const data: UpdateChatElementRequest = {
         fontFamily,
-        fontSize: SIZE_MAP[size],
+        fontSizePreset: size.toUpperCase(),
         fontWeight: bold ? 'bold' : 'normal',
         fontColor,
-        strokeEnabled: strokeVal.enabled,
+        strokePreset: stroke.toUpperCase(),
         strokeColor: '#000000',
-        strokeSize: strokeVal.size,
-        shadowEnabled: shadowVal.enabled,
+        shadowPreset: shadow.toUpperCase(),
         shadowColor: '#000000',
-        shadowSize: shadowVal.size,
-        ...(chatBg !== 'transparent' && {
-          backgroundColor: chatBg,
-          backgroundOpacity: 1,
-        }),
+        backgroundPreset: bgPresetName,
+        allCaps: caps,
+        hideCommands,
+        hideBadges,
+        hideBots,
+        fadeEnabled,
+        fadeTime: fadeEnabled ? parseInt(fadeTime) : 30,
       };
       await onSave(data);
     } catch (err) {
